@@ -1,0 +1,15 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\backend",
+    "\\backend\\app\\Http",
+    "\\backend\\app\\Http\\Controllers",
+    "\\backend\\routes",
+    "\\frontend",
+    "\\frontend\\src",
+    "\\frontend\\src\\pages",
+    "\\frontend\\src\\pages\\dashboards"
+  ],
+  "SelectedNode": "\\backend\\routes\\api.php",
+  "PreviewInSolutionExplorer": false
+}

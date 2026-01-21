@@ -49,7 +49,7 @@ class AuthController extends Controller
             'surname' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6',
-            'role' => 'required|string|in:user,admin,moderator,guest'
+            'role' => 'required|string|in:user,guest'
         ]);
 
         //kreiram korisnika
