@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\VerificationController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CompetencyController;
