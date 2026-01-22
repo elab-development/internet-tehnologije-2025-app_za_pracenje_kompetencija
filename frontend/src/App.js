@@ -20,10 +20,11 @@ function App() {
         <Route path="/login" element={<Login /> }/>
         <Route path="/register" element={<Register />} />
 
-        
-        {/* ostale stranice (kasnije će biti zaštićene) */}
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/competencies" element={<Competencies />} />
+        {/* DASHBOARD + CHILDREN */}
+        <Route path="/dashboard" element={<Dashboard />}>
+          <Route path="competencies" element={<Competencies />} />
+        </Route>
+
         <Route path="/profile" element={<Profile />} />
      
       </Routes>

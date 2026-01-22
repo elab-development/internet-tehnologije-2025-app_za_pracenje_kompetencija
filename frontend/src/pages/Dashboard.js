@@ -2,6 +2,7 @@ import AdminDashboard from './dashboards/AdminDashboard.js';
 import ModeratorDashboard from './dashboards/ModeratorDashboard.js';
 import UserDashboard from './dashboards/UserDashboard.js';
 import GuestDashboard from './dashboards/GuestDashboard.js';
+import { Outlet } from 'react-router-dom';
 
 
 const Dashboard = () => {
@@ -16,7 +17,12 @@ const Dashboard = () => {
   if (role === 'moderator') return <ModeratorDashboard />;
   if (role === 'guest') return <GuestDashboard />;
 
-  return <UserDashboard />;
+   return (
+    <>
+      <UserDashboard />
+      <Outlet />
+    </>
+  );
 };
 
 export default Dashboard;
