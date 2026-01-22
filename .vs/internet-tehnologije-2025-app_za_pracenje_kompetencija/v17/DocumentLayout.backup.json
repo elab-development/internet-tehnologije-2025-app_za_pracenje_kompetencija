@@ -3,24 +3,36 @@
   "WorkspaceRootPath": "C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\backend\\routes\\api.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\routes\\api.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\frontend\\src\\pages\\dashboards\\AdminDashboard.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:frontend\\src\\pages\\dashboards\\AdminDashboard.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\frontend\\src\\pages\\dashboards\\UserDashboard.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:frontend\\src\\pages\\dashboards\\UserDashboard.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\frontend\\src\\reportWebVitals.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:frontend\\src\\reportWebVitals.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\frontend\\src\\setupTests.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:frontend\\src\\setupTests.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\frontend\\src\\pages\\Login.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:frontend\\src\\pages\\Login.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\backend\\routes\\api.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\routes\\api.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\backend\\routes\\web.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\routes\\web.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\backend\\routes\\console.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\routes\\console.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\frontend\\src\\pages\\dashboards\\UserDashboard.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:frontend\\src\\pages\\dashboards\\UserDashboard.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\backend\\app\\Http\\Controllers\\AuthController.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
@@ -37,10 +49,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\frontend\\src\\App.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:frontend\\src\\App.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\frontend\\src\\setupTests.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:frontend\\src\\setupTests.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\frontend\\src\\index.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
@@ -66,15 +74,54 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 5,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "index.js",
+              "DocumentMoniker": "C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\frontend\\src\\index.js",
+              "RelativeDocumentMoniker": "frontend\\src\\index.js",
+              "ToolTip": "C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\frontend\\src\\index.js",
+              "RelativeToolTip": "frontend\\src\\index.js",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2026-01-21T22:18:28.826Z",
+              "IsPinned": true
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 5,
+              "Title": "web.php",
+              "DocumentMoniker": "C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\backend\\routes\\web.php",
+              "RelativeDocumentMoniker": "backend\\routes\\web.php",
+              "ToolTip": "C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\backend\\routes\\web.php",
+              "RelativeToolTip": "backend\\routes\\web.php",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
+              "WhenOpened": "2026-01-22T10:40:10.857Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "console.php",
+              "DocumentMoniker": "C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\backend\\routes\\console.php",
+              "RelativeDocumentMoniker": "backend\\routes\\console.php",
+              "ToolTip": "C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\backend\\routes\\console.php",
+              "RelativeToolTip": "backend\\routes\\console.php",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
+              "WhenOpened": "2026-01-22T10:40:06.08Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
               "Title": "UserDashboard.js",
               "DocumentMoniker": "C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\frontend\\src\\pages\\dashboards\\UserDashboard.js",
               "RelativeDocumentMoniker": "frontend\\src\\pages\\dashboards\\UserDashboard.js",
@@ -87,33 +134,33 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "AdminDashboard.js",
               "DocumentMoniker": "C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\frontend\\src\\pages\\dashboards\\AdminDashboard.js",
               "RelativeDocumentMoniker": "frontend\\src\\pages\\dashboards\\AdminDashboard.js",
               "ToolTip": "C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\frontend\\src\\pages\\dashboards\\AdminDashboard.js",
               "RelativeToolTip": "frontend\\src\\pages\\dashboards\\AdminDashboard.js",
-              "ViewState": "AgIAAEkAAAAAAAAAAAAwwHcAAAAtAAAAAAAAAA==",
+              "ViewState": "AgIAADMAAAAAAAAAAAAAAFIAAAAvAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
               "WhenOpened": "2026-01-21T22:32:13.5Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 4,
               "Title": "api.php",
               "DocumentMoniker": "C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\backend\\routes\\api.php",
               "RelativeDocumentMoniker": "backend\\routes\\api.php",
               "ToolTip": "C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\backend\\routes\\api.php",
               "RelativeToolTip": "backend\\routes\\api.php",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAYAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
               "WhenOpened": "2026-01-21T22:25:26.346Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 3,
               "Title": "Login.js",
               "DocumentMoniker": "C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\frontend\\src\\pages\\Login.js",
               "RelativeDocumentMoniker": "frontend\\src\\pages\\Login.js",
@@ -126,7 +173,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 2,
               "Title": "setupTests.js",
               "DocumentMoniker": "C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\frontend\\src\\setupTests.js",
               "RelativeDocumentMoniker": "frontend\\src\\setupTests.js",
@@ -139,7 +186,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
               "Title": "reportWebVitals.js",
               "DocumentMoniker": "C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\frontend\\src\\reportWebVitals.js",
               "RelativeDocumentMoniker": "frontend\\src\\reportWebVitals.js",
@@ -152,20 +199,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "index.js",
-              "DocumentMoniker": "C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\frontend\\src\\index.js",
-              "RelativeDocumentMoniker": "frontend\\src\\index.js",
-              "ToolTip": "C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\frontend\\src\\index.js",
-              "RelativeToolTip": "frontend\\src\\index.js",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2026-01-21T22:18:28.826Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 13,
               "Title": "Dashboard.js",
               "DocumentMoniker": "C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\frontend\\src\\pages\\Dashboard.js",
               "RelativeDocumentMoniker": "frontend\\src\\pages\\Dashboard.js",
@@ -173,12 +207,11 @@
               "RelativeToolTip": "frontend\\src\\pages\\Dashboard.js",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2026-01-21T22:18:07.378Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-21T22:18:07.378Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 14,
               "Title": "Competencies.js",
               "DocumentMoniker": "C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\frontend\\src\\pages\\Competencies.js",
               "RelativeDocumentMoniker": "frontend\\src\\pages\\Competencies.js",
@@ -186,12 +219,11 @@
               "RelativeToolTip": "frontend\\src\\pages\\Competencies.js",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2026-01-21T22:18:06.307Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-21T22:18:06.307Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 9,
               "Title": "Register.js",
               "DocumentMoniker": "C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\frontend\\src\\pages\\Register.js",
               "RelativeDocumentMoniker": "frontend\\src\\pages\\Register.js",
@@ -199,12 +231,11 @@
               "RelativeToolTip": "frontend\\src\\pages\\Register.js",
               "ViewState": "AgIAAEcAAAAAAAAAAAAQwGUAAAAwAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2026-01-21T22:17:32.72Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-21T22:17:32.72Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 10,
               "Title": "Profile.js",
               "DocumentMoniker": "C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\frontend\\src\\pages\\Profile.js",
               "RelativeDocumentMoniker": "frontend\\src\\pages\\Profile.js",
@@ -212,12 +243,11 @@
               "RelativeToolTip": "frontend\\src\\pages\\Profile.js",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2026-01-21T22:17:30.716Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-21T22:17:30.716Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 15,
               "Title": "0001_01_01_000000_create_users_table.php",
               "DocumentMoniker": "C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\backend\\database\\migrations\\0001_01_01_000000_create_users_table.php",
               "RelativeDocumentMoniker": "backend\\database\\migrations\\0001_01_01_000000_create_users_table.php",
@@ -225,12 +255,11 @@
               "RelativeToolTip": "backend\\database\\migrations\\0001_01_01_000000_create_users_table.php",
               "ViewState": "AgIAAAwAAAAAAAAAAAAAABUAAAALAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
-              "WhenOpened": "2026-01-21T17:39:23.893Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-21T17:39:23.893Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 8,
               "Title": "AuthController.php",
               "DocumentMoniker": "C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\backend\\app\\Http\\Controllers\\AuthController.php",
               "RelativeDocumentMoniker": "backend\\app\\Http\\Controllers\\AuthController.php",
@@ -238,12 +267,11 @@
               "RelativeToolTip": "backend\\app\\Http\\Controllers\\AuthController.php",
               "ViewState": "AgIAACQAAAAAAAAAAAAAADMAAAAuAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
-              "WhenOpened": "2026-01-21T17:38:43.692Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-21T17:38:43.692Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 11,
               "Title": "App.js",
               "DocumentMoniker": "C:\\Users\\gazda\\ITEH projekat\\internet-tehnologije-2025-app_za_pracenje_kompetencija\\frontend\\src\\App.js",
               "RelativeDocumentMoniker": "frontend\\src\\App.js",
@@ -251,8 +279,7 @@
               "RelativeToolTip": "frontend\\src\\App.js",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAyAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2026-01-21T17:35:59.708Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-21T17:35:59.708Z"
             }
           ]
         }

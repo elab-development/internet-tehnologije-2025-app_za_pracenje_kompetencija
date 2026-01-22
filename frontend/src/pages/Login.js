@@ -25,6 +25,13 @@ const Login = () => {
 
             localStorage.setItem('token', res.data.token);
             localStorage.setItem('role', res.data.user.role);
+            localStorage.setItem('user_id', res.data.user.id);          // Da URL ne bude više 'null' 
+            localStorage.setItem('user_name', res.data.user.name);      // Da Dashboard zna ime 
+            localStorage.setItem('user_surname', res.data.user.surname); // Da Dashboard zna prezime
+            localStorage.setItem('user_email', res.data.user.email);    // Da Dashboard zna email 
+            localStorage.setItem('user_description', res.data.user.description || ''); // Da Dashboard zna opis
+
+            alert("Login successful!");
 
             navigate('/dashboard');
 

@@ -2,12 +2,15 @@
   "ExpandedNodes": [
     "",
     "\\backend",
+    "\\backend\\app\\Http",
+    "\\backend\\app\\Http\\Controllers",
+    "\\backend\\app\\Models",
+    "\\backend\\database",
     "\\backend\\routes",
-    "\\frontend",
-    "\\frontend\\src",
-    "\\frontend\\src\\pages",
-    "\\frontend\\src\\pages\\dashboards"
+    "\\backend\\storage",
+    "\\backend\\storage\\framework",
+    "\\backend\\storage\\logs"
   ],
-  "SelectedNode": "\\frontend\\src\\pages\\dashboards\\AdminDashboard.js",
+  "SelectedNode": "\\frontend\\src\\pages\\Login.js",
   "PreviewInSolutionExplorer": false
 }
