@@ -2,14 +2,12 @@
   "ExpandedNodes": [
     "",
     "\\backend",
-    "\\backend\\app\\Http",
-    "\\backend\\app\\Http\\Controllers",
     "\\backend\\routes",
     "\\frontend",
     "\\frontend\\src",
     "\\frontend\\src\\pages",
     "\\frontend\\src\\pages\\dashboards"
   ],
-  "SelectedNode": "\\backend\\routes\\api.php",
+  "SelectedNode": "\\frontend\\src\\pages\\dashboards\\AdminDashboard.js",
   "PreviewInSolutionExplorer": false
 }

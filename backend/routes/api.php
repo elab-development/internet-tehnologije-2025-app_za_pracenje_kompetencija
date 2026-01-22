@@ -14,9 +14,7 @@ Route::get('/users', function () {
 Route::patch('/users/{id}/role', function (Request $request, $id) {
     $user = User::findOrFail($id);
     // Ako je korisnik admin, ne dozvoljavamo promenu role
-    if ($user->role === 'admin') {
-        return response()->json(['message' => 'Nije moguce menjati rolu administratoru!'], 403);
-    }
+    
     $user->role = $request->role; // npr. 'moderator' ili 'user'
     $user->save();
     return response()->json(['message' => 'Rola uspešno promenjena', 'user' => $user]); //  <- izbacuje onu poruku gore :)
