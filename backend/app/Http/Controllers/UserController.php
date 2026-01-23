@@ -6,47 +6,61 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-class UserController extends Controller
-{
-    public function update(Request $request, $id)
-{
-    // 1. Validacija - 'sometimes' dozvoljava da polja ne budu u zahtevu, 
-    // a 'nullable' dozvoljava da budu prazna.
-    $request->validate([
-        'name' => 'sometimes|nullable|string|max:255',
-        'surname' => 'sometimes|nullable|string|max:255',
-        'email' => 'sometimes|nullable|email|unique:users,email,' . $id,
-        'password' => 'sometimes|nullable|min:6',
-    ]);
+class UserController extends Controller {
 
+    public function update(Request $request, $id) {
+
+        // 1. Validacija - 'sometimes' dozvoljava da polja ne budu u zahtevu, 
+        // a 'nullable' dozvoljava da budu prazna.
+
+        $request->validate([
+            'name' => 'sometimes|nullable|string|max:255',
+            'surname' => 'sometimes|nullable|string|max:255',
+            'email' => 'sometimes|nullable|email|unique:users,email,' . $id,
+            'password' => 'sometimes|nullable|min:6',
+        ]);
+
+        $user = User::findOrFail($id);
+
+        // 2. Ažuriranje - koristimo tvoju logiku sa filled()
+        if ($request->filled('name')) {
+            $user->name = $request->name;
+        }
+
+        if ($request->filled('surname')) {
+            $user->surname = $request->surname;
+        }
+
+        if ($request->filled('email')) {
+            $user->email = $request->email;
+        }
+
+        if ($request->filled('description')) {
+            $user->description = $request->description;
+        }
+
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+
+        $user->save();
+
+        return response()->json([
+            'message' => 'Profile successfully updated! ✅',
+            'user' => $user
+        ], 200);
+    }
+
+    public function destroy($id)
+{
     $user = User::findOrFail($id);
-
-    // 2. Ažuriranje - koristimo tvoju logiku sa filled()
-    if ($request->filled('name')) {
-        $user->name = $request->name;
-    }
-
-    if ($request->filled('surname')) {
-        $user->surname = $request->surname;
-    }
-
-    if ($request->filled('email')) {
-        $user->email = $request->email;
-    }
-
-    if ($request->filled('description')) {
-        $user->description = $request->description;
-    }
-
-    if ($request->filled('password')) {
-        $user->password = Hash::make($request->password);
-    }
-
-    $user->save();
+    $user->delete(); // Trajno brisanje iz baze 🚫
 
     return response()->json([
-        'message' => 'Profile successfully updated! ✅',
-        'user' => $user
+        'message' => 'Account permanently deleted. ❌'
     ], 200);
 }
+
+
+
 }

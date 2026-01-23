@@ -32,3 +32,5 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('verifications', VerificationController::class);
 });
+
+Route::delete('/users/{id}', [UserController::class, 'destroy']); // ruta za brisanje naloga

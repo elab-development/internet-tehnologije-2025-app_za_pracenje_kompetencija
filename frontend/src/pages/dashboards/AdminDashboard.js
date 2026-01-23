@@ -5,8 +5,8 @@ import axios from 'axios';
 const AdminDashboard = () => {
     const navigate = useNavigate();
     const [users, setUsers] = useState([]);
-    const [view, setView] = useState('default'); // Stanje za promenu prikaza
-    const [searchTerm, setSearchTerm] = useState(''); //Stanje koje cuva ono sto je korisnik ukucao, pocetna vrednost je prazan string
+    const [view, setView] = useState('default');
+    const [searchTerm, setSearchTerm] = useState('');
     const [profileData, setProfileData] = useState({
         name: '',
         surname: '',
@@ -15,13 +15,31 @@ const AdminDashboard = () => {
     });
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+    // Definisanje ID-a trenutnog admina iz localStorage-a kako bismo znali koji profil je tvoj 🔑
+    const currentAdminId = localStorage.getItem('user_id');
+
     const fetchUsers = async () => {
         try {
             const response = await axios.get('http://127.0.0.1:8000/api/users');
             setUsers(response.data);
-            setView('users'); // Kada povuče podatke, promeni prikaz na tabelu
+            setView('users');
         } catch (error) {
             console.error("Greška pri učitavanju korisnika", error);
+        }
+    };
+
+    // NOVA FUNKCIJA: Brisanje korisnika iz baze i ažuriranje tabele 🗑️
+    const deleteUser = async (userId) => {
+        if (window.confirm("Are you sure you want to delete this profile?")) {
+            try {
+                await axios.delete(`http://127.0.0.1:8000/api/users/${userId}`);
+                // Filtriramo listu tako da odmah sklonimo obrisanog korisnika iz prikaza
+                setUsers(users.filter(user => user.id !== userId));
+                alert("User deleted successfully! ✅");
+            } catch (error) {
+                console.error("Error deleting user:", error);
+                alert("Failed to delete user. ❌");
+            }
         }
     };
 
@@ -30,9 +48,9 @@ const AdminDashboard = () => {
             await axios.patch(`http://127.0.0.1:8000/api/users/${userId}/role`, { role: newRole });
             const response = await axios.get('http://127.0.0.1:8000/api/users');
             setUsers(response.data);
-            alert(`Role was succesfully changend to ${newRole}`);
+            alert(`Role was successfully changed to ${newRole}`);
         } catch (error) {
-            alert("Error ");
+            alert("Error");
         }
     };
 
@@ -43,13 +61,9 @@ const AdminDashboard = () => {
 
     const handleSaveChanges = async () => {
         const userId = localStorage.getItem('user_id');
-
-        // Kreiramo prazan objekat u koji ćemo pakovati samo popunjena polja
         const dataToSend = {};
 
-        // Proveravamo svako polje. Ako nije prazno, dodajemo ga u objekat za slanje.
         if (profileData.name && profileData.name.trim() !== "") {
-            // Ovde možeš zadržati tvoju proveru za dužinu i brojeve
             if (profileData.name.length <= 2 || /\d/.test(profileData.name)) {
                 alert("First Name must be longer than 2 characters and cannot contain numbers! ❌");
                 return;
@@ -65,7 +79,6 @@ const AdminDashboard = () => {
             dataToSend.surname = profileData.surname;
         }
 
-        // KLJUČNI DEO: Email šaljemo samo ako nije prazan
         if (profileData.email && profileData.email.trim() !== "") {
             dataToSend.email = profileData.email;
         }
@@ -83,20 +96,15 @@ const AdminDashboard = () => {
         }
 
         try {
-            // Šaljemo pročišćeni objekat dataToSend umesto profileData
             const response = await axios.put(`http://127.0.0.1:8000/api/users/${userId}`, dataToSend);
-
             if (response.status === 200) {
                 alert("Profile updated successfully! ✅");
-                // ... ostatak tvog koda za localStorage i modal
+                setIsModalOpen(false);
             }
         } catch (error) {
-            // Ako Laravel validacija ipak baci grešku (npr. neispravan email format), ovde je hvatamo
             if (error.response && error.response.status === 422) {
-                console.log("Validation errors:", error.response.data.errors);
                 alert("Validation failed: " + JSON.stringify(error.response.data.errors));
             } else {
-                console.error("Error updating profile:", error);
                 alert("Failed to update profile. ❌");
             }
         }
@@ -108,21 +116,17 @@ const AdminDashboard = () => {
                 <h1 className="text-3xl font-bold text-indigo-900">Admin Dashboard</h1>
                 <div className="flex gap-2">
                     <button
-                        onClick={() => setIsModalOpen(true)} // Otvara prozor za izmenu
+                        onClick={() => setIsModalOpen(true)}
                         className="bg-indigo-100 text-indigo-700 px-4 py-2 rounded shadow hover:bg-indigo-200 transition font-medium"
                     >
                         Change Profile 👤
                     </button>
-
                     <button onClick={logout} className="bg-red-500 text-white px-4 py-2 rounded shadow hover:bg-red-600 transition">
                         Logout
                     </button>
                 </div>
             </div>
 
-
-
-            {/* AKO JE VIEW DEFAULT - PRIKAŽI KARTICE */}
             {view === 'default' && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div
@@ -135,22 +139,18 @@ const AdminDashboard = () => {
 
                     <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-green-500 opacity-50">
                         <h3 className="font-bold text-lg">View statistics</h3>
-                        
                     </div>
 
                     <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-yellow-500 opacity-50">
                         <h3 className="font-bold text-lg">Verify competencies</h3>
-                        
                     </div>
 
                     <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-red-500 opacity-50">
                         <h3 className="font-bold text-lg">Edit all competencies</h3>
-                        
                     </div>
                 </div>
             )}
 
-            {/* AKO JE VIEW USERS - PRIKAŽI TABELU KORISNIKA */}
             {view === 'users' && (
                 <div className="bg-white rounded-lg shadow-md p-6 animate-fade-in">
                     <div className="flex justify-between items-center mb-4">
@@ -165,13 +165,9 @@ const AdminDashboard = () => {
                     <div className="mb-6">
                         <input
                             type="text"
-                            // Povezujemo vrednost polja sa našim stanjem 'searchTerm' (Controlled Input)
                             value={searchTerm}
-                            // Svaki put kada korisnik promeni tekst (otkuca slovo), poziva se ova funkcija
-                            // e.target.value uzima trenutni tekst iz polja i šalje ga u setSearchTerm
                             onChange={(e) => setSearchTerm(e.target.value)}
                             placeholder="Search by name or email..."
-                            // Tailwind klase za vizuelni izgled (padding, border, senka, plavi krug pri kliku)
                             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm"
                         />
                     </div>
@@ -193,44 +189,53 @@ const AdminDashboard = () => {
                                         (user.surname && user.surname.toLowerCase().includes(searchTerm.toLowerCase()))
                                     )
                                     .map((user) => (
-                                    <tr key={user.id} className="hover:bg-gray-50">
-                                        <td className="p-3 border font-medium">{user.name} {user.surname}</td>
-                                        <td className="p-3 border">{user.email}</td>
-                                        <td className="p-3 border text-sm font-bold text-indigo-600 uppercase">{user.role}</td>
-                                        <td className="p-3 border flex gap-2">
-                                            {user.role !== 'admin' ? (
-                                                <>
-                                                    <button
-                                                        onClick={() => changeRole(user.id, 'moderator')}
-                                                        className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded text-xs hover:bg-indigo-200"
-                                                    >
-                                                        Moderator
-                                                    </button>
-                                                    <button
-                                                        onClick={() => changeRole(user.id, 'user')}
-                                                        className="bg-gray-100 text-gray-700 px-3 py-1 rounded text-xs hover:bg-gray-200"
-                                                    >
-                                                        User
-                                                    </button>
-                                                </>
-                                            ) : (
-                                                <span className="text-gray-400 italic text-xs">Protected</span>
-                                            )}
-                                        </td>
-                                    </tr>
-                                ))}
+                                        <tr key={user.id} className="hover:bg-gray-50">
+                                            <td className="p-3 border font-medium">{user.name} {user.surname}</td>
+                                            <td className="p-3 border">{user.email}</td>
+                                            <td className="p-3 border text-sm font-bold text-indigo-600 uppercase">{user.role}</td>
+                                            <td className="p-3 border flex gap-2">
+                                                {/* LOGIKA ZA PRIKAZ AKCIJA: Admini ne mogu da brišu druge admine niti sebe 🛡️ */}
+                                                {user.role !== 'admin' ? (
+                                                    <>
+                                                        <button
+                                                            onClick={() => changeRole(user.id, 'moderator')}
+                                                            className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded text-xs hover:bg-indigo-200"
+                                                        >
+                                                            Moderator
+                                                        </button>
+                                                        <button
+                                                            onClick={() => changeRole(user.id, 'user')}
+                                                            className="bg-gray-100 text-gray-700 px-3 py-1 rounded text-xs hover:bg-gray-200"
+                                                        >
+                                                            User
+                                                        </button>
+                                                        {/* NOVO: Dugme za brisanje vidljivo samo za usere i moderatore 🗑️ */}
+                                                        <button
+                                                            onClick={() => deleteUser(user.id)}
+                                                            className="bg-red-100 text-red-600 px-3 py-1 rounded text-xs hover:bg-red-200"
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    </>
+                                                ) : (
+                                                    // Ako je korisnik admin, ispisujemo "Protected" 🔒
+                                                    <span className="text-gray-400 italic text-xs">Protected</span>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    ))}
                             </tbody>
                         </table>
                     </div>
                 </div>
             )}
+
+            {/* Modal za izmenu profila ostaje nepromenjen */}
             {isModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
                     <div className="bg-white p-8 rounded-lg shadow-xl w-full max-w-md animate-fade-in">
                         <h2 className="text-2xl font-bold mb-6 text-indigo-900">Update Profile Settings</h2>
-
                         <div className="space-y-4">
-                            {/* First Name Input */}
                             <div>
                                 <label className="block text-sm font-semibold text-gray-700">First Name</label>
                                 <input
@@ -240,8 +245,6 @@ const AdminDashboard = () => {
                                     onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
                                 />
                             </div>
-
-                            {/* Last Name Input */}
                             <div>
                                 <label className="block text-sm font-semibold text-gray-700">Last Name</label>
                                 <input
@@ -251,8 +254,6 @@ const AdminDashboard = () => {
                                     onChange={(e) => setProfileData({ ...profileData, surname: e.target.value })}
                                 />
                             </div>
-
-                            {/* Email Input */}
                             <div>
                                 <label className="block text-sm font-semibold text-gray-700">Email Address</label>
                                 <input
@@ -262,8 +263,6 @@ const AdminDashboard = () => {
                                     onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
                                 />
                             </div>
-
-                            {/* Password Input */}
                             <div>
                                 <label className="block text-sm font-semibold text-gray-700">New Password</label>
                                 <input
@@ -274,8 +273,6 @@ const AdminDashboard = () => {
                                     onChange={(e) => setProfileData({ ...profileData, password: e.target.value })}
                                 />
                             </div>
-
-                            {/* Profile Description - Textarea */}
                             <div>
                                 <label className="block text-sm font-semibold text-gray-700">Profile Description</label>
                                 <textarea
@@ -287,21 +284,9 @@ const AdminDashboard = () => {
                                 />
                             </div>
                         </div>
-
-                        {/* Modal Actions */}
                         <div className="flex justify-end gap-3 mt-8">
-                            <button
-                                onClick={() => setIsModalOpen(false)}
-                                className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium"
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                onClick={handleSaveChanges} // Povezujemo sa našom proverom
-                                className="bg-indigo-600 text-white px-6 py-2 rounded shadow hover:bg-indigo-700 font-bold"
-                            >
-                                Save Changes
-                            </button>
+                            <button onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium">Cancel</button>
+                            <button onClick={handleSaveChanges} className="bg-indigo-600 text-white px-6 py-2 rounded shadow hover:bg-indigo-700 font-bold">Save Changes</button>
                         </div>
                     </div>
                 </div>
