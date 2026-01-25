@@ -14,12 +14,13 @@ return new class extends Migration
     {
         Schema::create('verifications', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('competency_id')->constrained()->onDelete('cascade');
-            $table->foreignId('moderator_id')->constrained('users')->onDelete('cascade'); // moderator koji verifikuje
+            $table->foreignId('moderator_id')->nullable()->constrained('users')->onDelete('cascade'); // moderator koji verifikuje
             $table->foreignId('status_verification_id')->constrained()->onDelete('cascade');
             $table->text('request');   // zahtev
             $table->text('note')->nullable(); // napomena
-            $table->date('verified_at'); // datum verifikacije
+            $table->date('verified_at')->nullable(); // datum verifikacije
             $table->timestamps();
         });
     }

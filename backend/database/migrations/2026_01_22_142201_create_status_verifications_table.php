@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('status_verifications', function (Blueprint $table) {
             $table->id();
+            $table->string('name');//ime statusa
             $table->string('description');//opis statusa
             $table->timestamps();
         });

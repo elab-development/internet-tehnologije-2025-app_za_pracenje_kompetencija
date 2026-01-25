@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class Verification extends Model
 {
     protected $fillable = [
-        'competency_id',
-        'moderator_id',
+        'user_id',
         'status_verification_id',
         'request',
-        'note',
+        'moderator_id',
         'verified_at',
+        'competency_id'
     ];
 
     public function competency()

@@ -9,6 +9,8 @@ use App\Models\Competency;
 use Illuminate\Http\Request;
 use App\Http\Controllers\UserController;
 
+
+
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::get('/users', function () {
@@ -23,7 +25,7 @@ Route::patch('/users/{id}/role', function (Request $request, $id) {
     return response()->json(['message' => 'Rola uspešno promenjena', 'user' => $user]); //  <- izbacuje onu poruku gore :)
 }); // ruta za promenu rola korisnika
 Route::put('/users/{id}', [UserController::class, 'update']); // update profila
-
+Route::get('/competency-options', [CompetencyController::class, 'getOptions']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('competencies', CompetencyController::class);
 }); //jer metode u CompetencuController koriste auth()->user() tjtst mora da postoji ulogovani korisnik da bi se ruta koristila

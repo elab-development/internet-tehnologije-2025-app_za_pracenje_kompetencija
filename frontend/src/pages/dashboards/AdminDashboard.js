@@ -15,7 +15,7 @@ const AdminDashboard = () => {
     });
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    // Definisanje ID-a trenutnog admina iz localStorage-a kako bismo znali koji profil je tvoj 🔑
+    // Definisanje ID-a trenutnog admina iz localStorage-a kako bismo znali koji profil je tvoj 
     const currentAdminId = localStorage.getItem('user_id');
 
     const fetchUsers = async () => {
@@ -28,17 +28,17 @@ const AdminDashboard = () => {
         }
     };
 
-    // NOVA FUNKCIJA: Brisanje korisnika iz baze i ažuriranje tabele 🗑️
+    // Brisanje korisnika iz baze i ažuriranje tabele 
     const deleteUser = async (userId) => {
         if (window.confirm("Are you sure you want to delete this profile?")) {
             try {
                 await axios.delete(`http://127.0.0.1:8000/api/users/${userId}`);
                 // Filtriramo listu tako da odmah sklonimo obrisanog korisnika iz prikaza
                 setUsers(users.filter(user => user.id !== userId));
-                alert("User deleted successfully! ✅");
+                alert("User deleted successfully!");
             } catch (error) {
                 console.error("Error deleting user:", error);
-                alert("Failed to delete user. ❌");
+                alert("Failed to delete user.");
             }
         }
     };
@@ -65,7 +65,7 @@ const AdminDashboard = () => {
 
         if (profileData.name && profileData.name.trim() !== "") {
             if (profileData.name.length <= 2 || /\d/.test(profileData.name)) {
-                alert("First Name must be longer than 2 characters and cannot contain numbers! ❌");
+                alert("First Name must be longer than 2 characters and cannot contain numbers!");
                 return;
             }
             dataToSend.name = profileData.name;
@@ -73,7 +73,7 @@ const AdminDashboard = () => {
 
         if (profileData.surname && profileData.surname.trim() !== "") {
             if (profileData.surname.length <= 2 || /\d/.test(profileData.surname)) {
-                alert("Last Name must be longer than 2 characters and cannot contain numbers! ❌");
+                alert("Last Name must be longer than 2 characters and cannot contain numbers!");
                 return;
             }
             dataToSend.surname = profileData.surname;
@@ -89,7 +89,7 @@ const AdminDashboard = () => {
 
         if (profileData.password && profileData.password.length > 0) {
             if (profileData.password.length < 6) {
-                alert("The new password must be at least 6 characters long! 🔐");
+                alert("The new password must be at least 6 characters long!");
                 return;
             }
             dataToSend.password = profileData.password;
@@ -98,14 +98,14 @@ const AdminDashboard = () => {
         try {
             const response = await axios.put(`http://127.0.0.1:8000/api/users/${userId}`, dataToSend);
             if (response.status === 200) {
-                alert("Profile updated successfully! ✅");
+                alert("Profile updated successfully!");
                 setIsModalOpen(false);
             }
         } catch (error) {
             if (error.response && error.response.status === 422) {
                 alert("Validation failed: " + JSON.stringify(error.response.data.errors));
             } else {
-                alert("Failed to update profile. ❌");
+                alert("Failed to update profile.");
             }
         }
     };
@@ -194,12 +194,12 @@ const AdminDashboard = () => {
                                             <td className="p-3 border">{user.email}</td>
                                             <td className="p-3 border text-sm font-bold text-indigo-600 uppercase">{user.role}</td>
                                             <td className="p-3 border flex gap-2">
-                                                {/* LOGIKA ZA PRIKAZ AKCIJA: Admini ne mogu da brišu druge admine niti sebe 🛡️ */}
-                                                {user.role !== 'admin' ? (
+                                                
+                                                {user.role !== 'admin' ? ( // Mogusnot da admin brise naloge usera i moderatora 
                                                     <>
                                                         <button
                                                             onClick={() => changeRole(user.id, 'moderator')}
-                                                            className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded text-xs hover:bg-indigo-200"
+                                                            className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded text-xs hover:bg-indigo-200" 
                                                         >
                                                             Moderator
                                                         </button>
@@ -209,16 +209,16 @@ const AdminDashboard = () => {
                                                         >
                                                             User
                                                         </button>
-                                                        {/* NOVO: Dugme za brisanje vidljivo samo za usere i moderatore 🗑️ */}
+                                                        
                                                         <button
                                                             onClick={() => deleteUser(user.id)}
-                                                            className="bg-red-100 text-red-600 px-3 py-1 rounded text-xs hover:bg-red-200"
+                                                            className="bg-red-100 text-red-600 px-3 py-1 rounded text-xs hover:bg-red-200" 
                                                         >
-                                                            Delete
-                                                        </button>
+                                                            Delete 
+                                                        </button> 
                                                     </>
                                                 ) : (
-                                                    // Ako je korisnik admin, ispisujemo "Protected" 🔒
+                                                    // Ako je korisnik admin, ispisujemo "Protected"
                                                     <span className="text-gray-400 italic text-xs">Protected</span>
                                                 )}
                                             </td>

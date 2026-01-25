@@ -3,6 +3,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Competency;
+use App\Models\Institution;
+use App\Models\CompetencyType;
+use App\Models\CompetencySource;
 
 class CompetencyController extends Controller
 {
@@ -12,22 +15,33 @@ class CompetencyController extends Controller
     }
 
     // Kreiranje nove kompetencije
-    public function store(Request $request)
-    {
-        $data = $request->validate([
-            'name' => 'required|string',
-            'level' => 'required|integer',
-            'evidence' => 'nullable|string',
-            'institution_id' => 'nullable|exists:institutions,id',
-            'type_id' => 'nullable|exists:competency_types,id',
-            'source_id' => 'nullable|exists:competency_sources,id',
+   public function store(Request $request)
+{
+    $data = $request->validate([
+        'name' => 'required|string',
+        'level' => 'required|integer|min:1|max:5',
+        'evidence' => 'nullable|string',
+        'institution_id' => 'required|exists:institutions,id',
+        'type_id' => 'required|exists:competency_types,id',
+        'source_id' => 'required|exists:competency_sources,id',
+    ]);
+
+    try {
+        $user = auth()->user();
+        $competency = $user->competencies()->create($data);
+        $competency->verifications()->create([
+            'user_id' => $user->id,
+            'status_verification_id' => 1, 
+            'request' => 'Request for: ' . $competency->name,
+            'moderator_id' => null, // Ovde stavljamo tvoj ID da baza ne baci grešku
+            'verified_at' => now(), // Odmah stavljamo trenutno vreme
         ]);
 
-        $competency = auth()->user()->competencies()->create($data);
-
-        return response()->json($competency, 201);
+        return response()->json($competency->load('verifications'), 201);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()], 500);
     }
-
+}
 
     // Prikaz jedne kompetencije
     public function show(Competency $competency)
@@ -62,4 +76,16 @@ class CompetencyController extends Controller
         $competency->delete();
         return response()->noContent();
     }
+
+    public function getOptions() 
+{
+    return response()->json([
+        'institutions' => Institution::all(),
+        'types' => CompetencyType::all(),
+        'sources' => CompetencySource::all(),
+    ]);
+}
+
+
+
 }

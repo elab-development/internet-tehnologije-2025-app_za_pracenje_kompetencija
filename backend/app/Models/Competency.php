@@ -15,6 +15,7 @@ class Competency extends Model
         'institution_id',
         'type_id',
         'source_id',
+        'acquired_at',
     ];
 
     public function user()
