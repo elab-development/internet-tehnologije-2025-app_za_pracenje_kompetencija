@@ -112,6 +112,28 @@ const UserDashboard = () => {
         }
     };
 
+    const handleShareProfile = async () => {
+        try {
+            const userId = localStorage.getItem('user_id');
+            const token = localStorage.getItem('token');
+            if (!token) throw new Error("Token not found! User is not logged in.");
+
+            const res = await axios.post(
+                `http://127.0.0.1:8000/api/generate-share-link/${userId}`,
+                {},
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            const link = res.data.link;
+            alert(`Your shareable profile link: ${link}`);
+        } catch (error) {
+            console.log("Full error:", error.response ? error.response.data : error);
+            alert("Error generating link: " + (error.response?.data?.message || error.message));
+        }
+    };
+
+
+
     return (
         <div className="min-h-screen p-8 bg-gray-100">
             <div className="flex justify-between items-center mb-8">
@@ -136,10 +158,11 @@ const UserDashboard = () => {
                     <p className="text-gray-600">Request a new competency to be added to your profile.</p>
                 </div>
 
-                <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-yellow-500 cursor-pointer hover:bg-yellow-50 transition">
-                    <h3 className="font-bold text-lg text-yellow-700">Edit my competencies</h3>
-                    <p className="text-gray-600">Modify existing competency details.</p>
+                <div onClick={handleShareProfile} className="bg-white p-6 rounded-lg shadow-md border-l-4 border-yellow-500 cursor-pointer hover:bg-yellow-50 transition">
+                    <h3 className="font-bold text-lg text-yellow-700">Share profile</h3>
+                    <p className="text-gray-600">Generate a secure link to share your profile.</p>
                 </div>
+
                 <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-red-500 cursor-pointer hover:bg-red-50 transition">
                     <h3 className="font-bold text-lg text-red-700">View status</h3>
                     <p className="text-gray-600">Check approval status.</p>

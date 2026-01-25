@@ -36,4 +36,10 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::delete('/users/{id}', [UserController::class, 'destroy']); // ruta za brisanje naloga
+
 Route::delete('/competencies/{id}', [CompetencyController::class, 'destroy']);
+
+
+Route::get('/public-profile/{token}', [UserController::class, 'publicProfileByToken']);
+Route::middleware('auth:sanctum')->post('/generate-share-link/{id}', [UserController::class, 'generateShareLink']);
+

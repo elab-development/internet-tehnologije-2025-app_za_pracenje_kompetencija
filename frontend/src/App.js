@@ -6,6 +6,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Competencies from './pages/Competencies';
 import Profile from './pages/Profile';
+import PublicProfile from './pages/PublicProfile';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 
@@ -27,6 +28,9 @@ function App() {
 
         <Route path="/profile" element={<Profile />} />
      
+
+        {/* za one koji otvore link za deljenje profila */}
+        <Route path="/public-profile/:id" element={<PublicProfile />} ></Route>
       </Routes>
     </Router>
   );

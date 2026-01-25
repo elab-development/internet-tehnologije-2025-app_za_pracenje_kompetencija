@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
-class UserController extends Controller {
+class UserController extends Controller
+{
 
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id)
+    {
 
         // 1. Validacija - 'sometimes' dozvoljava da polja ne budu u zahtevu, 
         // a 'nullable' dozvoljava da budu prazna.
@@ -52,15 +55,42 @@ class UserController extends Controller {
     }
 
     public function destroy($id)
-{
+    {
+        $user = User::findOrFail($id);
+        $user->delete(); // Trajno brisanje iz baze 🚫
+
+        return response()->json([
+            'message' => 'Account permanently deleted. ❌'
+        ], 200);
+    }
+
+    public function publicProfileByToken($token)
+    {
+        $user=User::where('share_token',$token)->firstOrFail();
+
+        return response()->json([
+            'name' => $user->name,
+            'surname' => $user->surname,
+            'competencies' => $user->competencies()
+                ->with(['institution', 'type', 'source', 'verifications.status'])
+                ->get()
+        ], 200);
+    }
+
+    public function generateShareLink($id){
     $user = User::findOrFail($id);
-    $user->delete(); // Trajno brisanje iz baze 🚫
+
+    $token = Str::uuid()->toString(); // generiše jedinstveni token
+
+    $user->share_token = $token;
+    $user->save();
+
+    // vrati link korisniku
+    $link = url("/public-profile/$token");
 
     return response()->json([
-        'message' => 'Account permanently deleted. ❌'
-    ], 200);
+        'message'=>'Link successfully generated ✅',
+        'link'=>$link
+    ]);
 }
-
-
-
 }
