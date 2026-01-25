@@ -36,3 +36,4 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::delete('/users/{id}', [UserController::class, 'destroy']); // ruta za brisanje naloga
+Route::delete('/competencies/{id}', [CompetencyController::class, 'destroy']);

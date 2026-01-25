@@ -17,7 +17,7 @@ class Verification extends Model
 
     public function competency()
     {
-        return $this->belongsTo(Competency::class);
+        return $this->belongsTo(Competency::class, 'competency_id');
     }
 
     public function moderator()

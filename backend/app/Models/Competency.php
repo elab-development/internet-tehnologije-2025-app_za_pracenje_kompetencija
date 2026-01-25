@@ -39,6 +39,6 @@ class Competency extends Model
 
     public function verifications()
     {
-        return $this->hasMany(Verification::class);
+        return $this->hasMany(Verification::class, 'competency_id');
     }
 }

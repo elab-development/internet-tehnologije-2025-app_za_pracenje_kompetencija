@@ -6,8 +6,29 @@ const Competencies = () => {
   const [competencies, setCompetencies] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedCompetency, setSelectedCompetency] = useState(null);
+
+  const [showFormModal, setShowFormModal] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+
+  const [formData, setFormData] = useState({
+    name: "",
+    level: "",
+    institution_id: "",
+    type_id: "",
+    source_id: "",
+    evidence: ""
+  });
+
+  const [institutions, setInstitutions] = useState([]);
+  const [types, setTypes] = useState([]);
+  const [sources, setSources] = useState([]);
+
 
   useEffect(() => {
+
     const fetchCompetencies = async () => {
       try {
         const token = localStorage.getItem('token');
@@ -34,6 +55,126 @@ const Competencies = () => {
     fetchCompetencies();
   }, [navigate]);
 
+  useEffect(() => {
+    const loadDropdowns = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const headers = { Authorization: `Bearer ${token}` };
+
+        const [instRes, typeRes, srcRes] = await Promise.all([
+          axios.get("http://127.0.0.1:8000/api/institutions", { headers }),
+          axios.get("http://127.0.0.1:8000/api/types", { headers }),
+          axios.get("http://127.0.0.1:8000/api/sources", { headers }),
+        ]);
+
+        setInstitutions(instRes.data || []);
+        setTypes(typeRes.data || []);
+        setSources(srcRes.data || []);
+      } catch (e) {
+        console.log("Dropdown load error:", e.response?.data || e.message);
+      }
+    };
+
+    loadDropdowns();
+  }, []);
+
+  const openEdit = (comp) => {
+    setIsEditing(true);
+    setEditingId(comp.id);
+
+    setFormData({
+      name: comp.name || "",
+      level: comp.level ?? "",
+      institution_id: comp.institution?.id ?? comp.institution_id ?? "",
+      type_id: comp.type?.id ?? comp.type_id ?? "",
+      source_id: comp.source?.id ?? comp.source_id ?? "",
+      evidence: comp.evidence || ""
+    });
+
+    setShowFormModal(true);
+  };
+
+  const closeForm = () => {
+    setShowFormModal(false);
+    setIsEditing(false);
+    setEditingId(null);
+  };
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+
+    const dataToSend = {
+      name: formData.name,
+      level: parseInt(formData.level, 10),
+      institution_id: formData.institution_id,
+      type_id: formData.type_id,
+      source_id: formData.source_id,
+      evidence: formData.evidence
+    };
+
+    try {
+      const token = localStorage.getItem("token");
+      const headers = { Authorization: `Bearer ${token}` };
+
+      const response = await axios.put(
+        `http://127.0.0.1:8000/api/competencies/${editingId}`,
+        dataToSend,
+        { headers }
+      );
+
+      // update u listi odmah
+      setCompetencies((prev) =>
+        prev.map((c) => (c.id === editingId ? response.data : c))
+      );
+
+      closeForm();
+    } catch (error) {
+      console.log("Server response error:", error.response?.data);
+      alert("Error: " + JSON.stringify(error.response?.data?.errors || error.message));
+    }
+  };
+
+
+  const handleEdit = (id) => {
+    // ako nemaš još edit stranicu, ovo je placeholder ruta
+    navigate(`/dashboard/competencies/${id}/edit`);
+  };
+
+
+
+  const handleDelete = (competency) => {
+    setSelectedCompetency(competency);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!selectedCompetency) return;
+
+    try {
+      const token = localStorage.getItem('token');
+
+      await axios.delete(
+        `http://127.0.0.1:8000/api/competencies/${selectedCompetency.id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      setCompetencies((prev) =>
+        prev.filter((c) => c.id !== selectedCompetency.id)
+      );
+
+      setShowDeleteModal(false);
+      setSelectedCompetency(null);
+    } catch (error) {
+      console.error('Delete error:', error);
+      alert('Delete failed.');
+    }
+  };
+
+
+
+
   if (loading) {
     return <div className="p-8">Loading competencies...</div>;
   }
@@ -59,9 +200,10 @@ const Competencies = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {competencies.map((comp) => (
+
             <div
               key={comp.id}
-              className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition"
+              className="relative bg-white p-6 pb-14 rounded-lg shadow hover:shadow-lg transition"
             >
               <h2 className="text-xl font-bold text-indigo-700 mb-2">
                 {comp.name}
@@ -91,20 +233,224 @@ const Competencies = () => {
 
               {comp.evidence && (
                 <p className="text-sm text-gray-500 mt-2">
-                   {comp.evidence}
+                  {comp.evidence}
                 </p>
               )}
 
               {comp.verifications?.length > 0 && (
                 <div className="mt-3 text-xs text-green-700 font-semibold">
-                   Verified ({comp.verifications.length})
+                  Verified ({comp.verifications.length})
                 </div>
               )}
+
+              {/* ACTION BUTTONS */}
+              <div className="absolute bottom-4 right-4 flex gap-2">
+                {/* EDIT */}
+                <button
+                  onClick={() => openEdit(comp)}
+                  className="p-2 rounded-full bg-indigo-50 hover:bg-indigo-100 text-indigo-700 transition"
+                  title="Edit"
+                  aria-label="Edit competency"
+                >
+                  {/* pencil icon */}
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M12 20h9"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+
+                {/* DELETE */}
+                <button
+                  onClick={() => handleDelete(comp)}
+                  className="p-2 rounded-full bg-red-50 hover:bg-red-100 text-red-600 transition"
+                  title="Delete"
+                  aria-label="Delete competency"
+                >
+                  {/* trash icon */}
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M3 6h18"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M8 6V4h8v2"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M6 6l1 16h10l1-16"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M10 11v6M14 11v6"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </button>
+              </div>
             </div>
+
+
           ))}
         </div>
+      )
+      }
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              Delete competency
+            </h3>
+
+            <p className="text-sm text-gray-600 mb-6">
+              Are you sure you want to delete{" "}
+              <span className="font-semibold">
+                {selectedCompetency?.name}
+              </span>
+              ? This action cannot be undone.
+            </p>
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  setSelectedCompetency(null);
+                }}
+                className="px-4 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={confirmDelete}
+                className="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700"
+              >
+                Yes, delete
+              </button>
+            </div>
+          </div>
+        </div>
       )}
-    </div>
+
+      {showFormModal && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg w-full max-w-lg p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold">Edit competency</h2>
+              <button onClick={closeForm} className="text-gray-500 hover:text-gray-800">✕</button>
+            </div>
+
+            <form onSubmit={handleSave} className="space-y-3">
+              <div>
+                <label className="text-sm font-medium">Name</label>
+                <input
+                  className="w-full border rounded-md px-3 py-2"
+                  value={formData.name}
+                  onChange={(e) => setFormData(p => ({ ...p, name: e.target.value }))}
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium">Level</label>
+                <input
+                  type="number"
+                  className="w-full border rounded-md px-3 py-2"
+                  value={formData.level}
+                  onChange={(e) => setFormData(p => ({ ...p, level: e.target.value }))}
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium">Institution</label>
+                <select
+                  className="w-full border rounded-md px-3 py-2"
+                  value={formData.institution_id}
+                  onChange={(e) => setFormData(p => ({ ...p, institution_id: e.target.value }))}
+                  required
+                >
+                  <option value="">Select...</option>
+                  {institutions.map(i => <option key={i.id} value={i.id}>{i.name}</option>)}
+                </select>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium">Type</label>
+                <select
+                  className="w-full border rounded-md px-3 py-2"
+                  value={formData.type_id}
+                  onChange={(e) => setFormData(p => ({ ...p, type_id: e.target.value }))}
+                  required
+                >
+                  <option value="">Select...</option>
+                  {types.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+                </select>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium">Source</label>
+                <select
+                  className="w-full border rounded-md px-3 py-2"
+                  value={formData.source_id}
+                  onChange={(e) => setFormData(p => ({ ...p, source_id: e.target.value }))}
+                  required
+                >
+                  <option value="">Select...</option>
+                  {sources.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                </select>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium">Evidence</label>
+                <textarea
+                  className="w-full border rounded-md px-3 py-2"
+                  rows={3}
+                  value={formData.evidence}
+                  onChange={(e) => setFormData(p => ({ ...p, evidence: e.target.value }))}
+                />
+              </div>
+
+              <div className="flex justify-end gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={closeForm}
+                  className="px-4 py-2 rounded-md border border-gray-300 hover:bg-gray-100"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 rounded-md bg-indigo-600 text-white hover:bg-indigo-700"
+                >
+                  Save changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+
+    </div >
+
   );
 };
 

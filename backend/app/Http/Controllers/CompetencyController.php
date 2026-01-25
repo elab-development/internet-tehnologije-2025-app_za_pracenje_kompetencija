@@ -13,6 +13,20 @@ class CompetencyController extends Controller
     {
         return auth()->user()->competencies()->with(['institution', 'type', 'source', 'verifications'])->get(); // samo svoje kompetencije
     }
+    //Brisanje kompetencije
+    public function destroy($id)
+    {
+        $competency = Competency::find($id);
+
+        if (!$competency) {
+            return response()->json(['message' => 'Not found'], 404);
+        }
+
+        $competency->verifications()->delete();
+        $competency->delete();
+
+        return response()->noContent(); // 204
+    }
 
     // Kreiranje nove kompetencije
    public function store(Request $request)
@@ -69,13 +83,13 @@ class CompetencyController extends Controller
         return response()->json($competency);
     }
 
-     // Brisanje komp
-    public function destroy(Competency $competency)
-    {
-        $this->authorize('delete', $competency);
-        $competency->delete();
-        return response()->noContent();
-    }
+    //  // Brisanje komp
+    // public function destroy(Competency $competency)
+    // {
+    //     $this->authorize('delete', $competency);
+    //     $competency->delete();
+    //     return response()->noContent();
+    // }
 
     public function getOptions() 
 {
