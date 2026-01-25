@@ -3,14 +3,14 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 
 const PublicProfile = () => {
-  const { id } = useParams();
+  const { token } = useParams();
   const [profile, setProfile] = useState(null);
 
   useEffect(() => {
     axios
-      .get(`http://127.0.0.1:8000/api/public-profile/${id}`)
+      .get(`http://127.0.0.1:8000/api/public-profile/${token}`)
       .then(res => setProfile(res.data));
-  }, [id]);
+  }, [token]);
 
   if (!profile) return <div className="p-8">Loading...</div>;
 
