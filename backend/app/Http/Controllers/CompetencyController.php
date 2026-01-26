@@ -29,11 +29,40 @@ class CompetencyController extends Controller
     }
 
     // Kreiranje nove kompetencije
-   public function store(Request $request)
+//    public function store(Request $request)
+// {
+//     $data = $request->validate([
+//         'name' => 'required|string',
+//         'level' => 'required|integer|min:1|max:5',
+//         'evidence' => 'nullable|string',
+//         'institution_id' => 'required|exists:institutions,id',
+//         'type_id' => 'required|exists:competency_types,id',
+//         'source_id' => 'required|exists:competency_sources,id',
+//     ]);
+
+//     try {
+//         $user = auth()->user();
+//         $competency = $user->competencies()->create($data);
+//         $competency->verifications()->create([
+//             'user_id' => $user->id,
+//             'status_verification_id' => 1, 
+//             'request' => 'Request for: ' . $competency->name,
+//             'moderator_id' => null, // Ovde stavljamo tvoj ID da baza ne baci grešku
+//             'verified_at' => null, // Odmah stavljamo trenutno vreme
+//         ]);
+
+//         return response()->json($competency->load('verifications'), 201);
+//     } catch (\Exception $e) {
+//         return response()->json(['error' => $e->getMessage()], 500);
+//     }
+// }
+
+public function store(Request $request)
 {
     $data = $request->validate([
         'name' => 'required|string',
         'level' => 'required|integer|min:1|max:5',
+        'acquired_at' => 'nullable|date',
         'evidence' => 'nullable|string',
         'institution_id' => 'required|exists:institutions,id',
         'type_id' => 'required|exists:competency_types,id',
@@ -42,20 +71,39 @@ class CompetencyController extends Controller
 
     try {
         $user = auth()->user();
+
+        // 1) Kreiraj kompetenciju
         $competency = $user->competencies()->create($data);
+
+        // 2) Ako je tip Informal (id=2), auto-approved
+        $isInformal = ((int) $data['source_id'] === 2);
+
+        // 1 = Waiting, 2 = Approved
+        $statusId = $isInformal ? 2 : 1;
+
+        // 3) Kreiraj verifikaciju sa odgovarajućim statusom
         $competency->verifications()->create([
             'user_id' => $user->id,
-            'status_verification_id' => 1, 
-            'request' => 'Request for: ' . $competency->name,
-            'moderator_id' => null, // Ovde stavljamo tvoj ID da baza ne baci grešku
-            'verified_at' => null, // Odmah stavljamo trenutno vreme
+            'status_verification_id' => $statusId,
+            'request' => $isInformal
+                ? 'Auto-approved (informal competency).'
+                : 'Request for: ' . $competency->name,
+            'moderator_id' => null,
+            'verified_at' => $isInformal ? now()->toDateString() : null, // kolona je DATE
+            'note' => $isInformal
+                ? 'Automatically approved because competency type is Informal.'
+                : null,
         ]);
 
         return response()->json($competency->load('verifications'), 201);
+
     } catch (\Exception $e) {
         return response()->json(['error' => $e->getMessage()], 500);
     }
 }
+
+
+
 
     // Prikaz jedne kompetencije
     public function show(Competency $competency)
@@ -72,6 +120,7 @@ class CompetencyController extends Controller
         $data = $request->validate([
             'name' => 'sometimes|string',
             'level' => 'sometimes|integer',
+            'acquired_at' => 'nullable|date',
             'evidence' => 'nullable|string',
             'institution_id' => 'sometimes|exists:institutions,id',
             'type_id' => 'sometimes|exists:competency_types,id',

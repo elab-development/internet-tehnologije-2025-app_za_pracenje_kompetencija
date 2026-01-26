@@ -75,21 +75,36 @@ class VerificationController extends Controller
     }
 
     //verifikovanje komp. od strane moderatora
-    public function verify(Request $request, $id) {
-        $verification = Verification::findOrFail($id); 
-        $verification->update([
-            'status_verification_id' => 2,
-            'moderator_id' => auth()->id(),
-            'verified_at' => now(),
-            'note' => $request->note ?? 'Approved.' // Dodat string
-        ]);
-
-        return response()->json([
-            'message' => 'Competency successfully verified!',
-            'verification' => $verification
-        ]);
+    public function verify(Request $request, $id)
+{
+    $user = Auth::user();
+    if ($user->role !== 'moderator') {
+        return response()->json(['message' => 'Unauthorized'], 403);
     }
-    public function reject(Request $request, $id) {
+
+    $verification = Verification::findOrFail($id);
+
+    // dozvoli samo ako je na čekanju
+    if ($verification->status_verification_id != 1) {
+        return response()->json(['message' => 'Only waiting verifications can be approved.'], 409);
+    }
+
+    $verification->update([
+        'status_verification_id' => 2,           // Approved
+        'moderator_id' => $user->id,
+        'verified_at' => now()->toDateString(),  // pošto je kolona DATE
+        'note' => $request->note ?? 'Approved.',
+    ]);
+
+    // updated_at je automatski "poslednje vreme promene statusa"
+
+    return response()->json([
+        'message' => 'Competency successfully verified!',
+        'verification' => $verification->fresh()
+    ]);
+}
+
+public function reject(Request $request, $id) {
         $request->validate([
             'note' => 'required|string|min:5' // Razlog je obavezan pri odbijanju
         ]);
@@ -102,5 +117,6 @@ class VerificationController extends Controller
         ]);
         return response()->json(['message' => 'Competency rejected.']);
     }
+
 
 }
