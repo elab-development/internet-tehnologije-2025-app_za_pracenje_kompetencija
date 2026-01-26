@@ -11,20 +11,26 @@ use Illuminate\Support\Facades\Auth;
 class VerificationController extends Controller
 {
     // Prikaz svih verifikacija za moderatora
-    public function index()
-    {
-        $user = Auth::user();
-
-        //Ako je moderator videce sve verif
-        if ($user->role === 'moderator') {
-            return Verification::with(['competency', 'competency.user', 'status', 'moderator'])->get();
+    public function index() {
+        try {
+            $user = auth()->user();
+            if ($user->role === 'moderator') {
+                // Učitavamo sve što je na čekanju (status 1)
+                // BITNO: Proveri da li se tvoja relacija u modelu Competency zove 'user'
+                return Verification::with(['competency', 'user', 'status'])
+                    ->where('status_verification_id', 1)
+                    ->get();
+            }
+            // Ako nije moderator, vidi samo svoje
+            return Verification::with(['competency', 'status'])
+                ->where('user_id', $user->id)
+                ->get();
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Server Error',
+                'message' => $e->getMessage() // Ovo će nam reći tačnu grešku u konzoli
+            ], 500);
         }
-        // Standardni korisnik vidi samo svoje verifikacije
-        return Verification::with(['competency', 'status', 'moderator'])
-            ->where('competency', function ($q) use ($user) {
-                $q->where('user_id', $user->id);
-            });
-
     }
 
 
@@ -67,4 +73,34 @@ class VerificationController extends Controller
 
 
     }
+
+    //verifikovanje komp. od strane moderatora
+    public function verify(Request $request, $id) {
+        $verification = Verification::findOrFail($id); 
+        $verification->update([
+            'status_verification_id' => 2,
+            'moderator_id' => auth()->id(),
+            'verified_at' => now(),
+            'note' => $request->note ?? 'Approved.' // Dodat string
+        ]);
+
+        return response()->json([
+            'message' => 'Competency successfully verified!',
+            'verification' => $verification
+        ]);
+    }
+    public function reject(Request $request, $id) {
+        $request->validate([
+            'note' => 'required|string|min:5' // Razlog je obavezan pri odbijanju
+        ]);
+        $verification = Verification::findOrFail($id);
+        $verification->update([
+            'status_verification_id' => 3, // 3 = Rejected
+            'moderator_id' => auth()->id(),
+            'verified_at' => now(),
+            'note' => $request->note
+        ]);
+        return response()->json(['message' => 'Competency rejected.']);
+    }
+
 }

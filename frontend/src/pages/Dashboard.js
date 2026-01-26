@@ -1,4 +1,4 @@
-import AdminDashboard from './dashboards/AdminDashboard.js';
+﻿import AdminDashboard from './dashboards/AdminDashboard.js';
 import ModeratorDashboard from './dashboards/ModeratorDashboard.js';
 import UserDashboard from './dashboards/UserDashboard.js';
 import GuestDashboard from './dashboards/GuestDashboard.js';
@@ -20,7 +20,6 @@ const Dashboard = () => {
    return (
     <>
       <UserDashboard />
-      <Outlet />
     </>
   );
 };

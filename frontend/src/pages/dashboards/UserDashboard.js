@@ -98,7 +98,7 @@ const UserDashboard = () => {
             alert("Profile updated!");
             localStorage.setItem('user_name', profileData.name);
             setIsProfileModalOpen(false);
-        } catch (error) { alert("Update failed! ❌"); }
+        } catch (error) { alert("Update failed!"); }
     };
 
     const handleDeleteAccount = async () => {

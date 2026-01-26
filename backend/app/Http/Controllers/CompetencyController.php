@@ -48,7 +48,7 @@ class CompetencyController extends Controller
             'status_verification_id' => 1, 
             'request' => 'Request for: ' . $competency->name,
             'moderator_id' => null, // Ovde stavljamo tvoj ID da baza ne baci grešku
-            'verified_at' => now(), // Odmah stavljamo trenutno vreme
+            'verified_at' => null, // Odmah stavljamo trenutno vreme
         ]);
 
         return response()->json($competency->load('verifications'), 201);

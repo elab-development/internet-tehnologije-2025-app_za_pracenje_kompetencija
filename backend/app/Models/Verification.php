@@ -29,4 +29,8 @@ class Verification extends Model
     {
         return $this->belongsTo(StatusVerification::class, 'status_verification_id');
     }
+
+    public function user() {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }
