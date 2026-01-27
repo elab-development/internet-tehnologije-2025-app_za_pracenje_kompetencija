@@ -113,24 +113,73 @@ public function store(Request $request)
     }
 
     //Azuriranje komp
-    public function update(Request $request, Competency $competency)
-    {
-        $this->authorize('update', $competency);
+    // public function update(Request $request, Competency $competency)
+    // {
+    //     $this->authorize('update', $competency);
 
-        $data = $request->validate([
-            'name' => 'sometimes|string',
-            'level' => 'sometimes|integer',
-            'acquired_at' => 'nullable|date',
-            'evidence' => 'nullable|string',
-            'institution_id' => 'sometimes|exists:institutions,id',
-            'type_id' => 'sometimes|exists:competency_types,id',
-            'source_id' => 'sometimes|exists:competency_sources,id',
-        ]);
+    //     $data = $request->validate([
+    //         'name' => 'sometimes|string',
+    //         'level' => 'sometimes|integer',
+    //         'acquired_at' => 'nullable|date',
+    //         'evidence' => 'nullable|string',
+    //         'institution_id' => 'sometimes|exists:institutions,id',
+    //         'type_id' => 'sometimes|exists:competency_types,id',
+    //         'source_id' => 'sometimes|exists:competency_sources,id',
+    //     ]);
 
-        $competency->update($data);
+    //     $competency->update($data);
 
-        return response()->json($competency);
+    //     return response()->json($competency);
+    // }
+
+    public function update(Request $request, $id)
+{
+    $user = auth()->user();
+
+    // Nadji kompetenciju i proveri da je user-ova
+    $competency = Competency::with(['institution', 'type', 'source', 'verifications'])
+        ->where('id', $id)
+        ->where('user_id', $user->id)
+        ->first();
+
+    if (!$competency) {
+        return response()->json(['message' => 'Not found'], 404);
     }
+
+    $data = $request->validate([
+        'name' => 'sometimes|required|string',
+        'level' => 'sometimes|required|integer|min:1|max:5',
+        'acquired_at' => 'nullable|date',
+        'evidence' => 'nullable|string',
+        'institution_id' => 'sometimes|required|exists:institutions,id',
+        'type_id' => 'sometimes|required|exists:competency_types,id',
+        //'source_id' => 'sometimes|required|exists:competency_sources,id',
+    ]);
+
+    $competency->update($data);
+
+    // (Opcionalno, ali preporuka)
+    // Ako izmeni pending kompetenciju, možeš da resetuješ verifikaciju na Pending
+    // osim ako je Informal (source_id=2) -> Approved.
+    $latestVerification = $competency->verifications()->orderByDesc('id')->first();
+
+    if ($latestVerification) {
+        $sourceId = (int) ($data['source_id'] ?? $competency->source_id);
+        $isInformal = ($sourceId === 2);
+
+        $latestVerification->update([
+            'status_verification_id' => $isInformal ? 2 : $latestVerification->status_verification_id,
+            'verified_at' => $isInformal ? now()->toDateString() : $latestVerification->verified_at,
+            'note' => $isInformal ? 'Automatically approved because competency source is Informal.' : $latestVerification->note,
+        ]);
+    }
+
+    // Vrati sve sa relacijama da front dobije sve što treba
+    return response()->json(
+        $competency->fresh()->load(['institution', 'type', 'source', 'verifications'])
+    );
+}
+
 
     //  // Brisanje komp
     // public function destroy(Competency $competency)

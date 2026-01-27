@@ -50,4 +50,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/moderator/verification-history', [VerificationController::class, 'history']); // ✅ OVDE
 });
 
+//dodato za update
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/competencies', [CompetencyController::class, 'index']);
+    Route::put('/competencies/{id}', [CompetencyController::class, 'update']);
+    Route::delete('/competencies/{id}', [CompetencyController::class, 'destroy']);
+});
+
+
 

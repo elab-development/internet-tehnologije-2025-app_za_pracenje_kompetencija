@@ -26,6 +26,13 @@ const Competencies = () => {
         evidence: ""
     });
 
+    const toDateInputValue = (value) => {
+        if (!value) return "";
+        // Ako dođe "2026-01-25 00:00:00" ili ISO string, uzmi prvih 10
+        return String(value).slice(0, 10);
+    };
+
+
 
     const [institutions, setInstitutions] = useState([]);
     const [types, setTypes] = useState([]);
@@ -59,43 +66,62 @@ const Competencies = () => {
         const loadDropdowns = async () => {
             try {
                 const token = localStorage.getItem("token");
-                const headers = { Authorization: `Bearer ${token}` };
-                const [instRes, typeRes, srcRes] = await Promise.all([
-                    axios.get("http://127.0.0.1:8000/api/institutions", { headers }),
-                    axios.get("http://127.0.0.1:8000/api/types", { headers }),
-                    axios.get("http://127.0.0.1:8000/api/sources", { headers }),
-                ]);
-                setInstitutions(instRes.data || []);
-                setTypes(typeRes.data || []);
-                setSources(srcRes.data || []);
+
+                const res = await axios.get("http://127.0.0.1:8000/api/competency-options", {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+
+                setInstitutions(res.data?.institutions || []);
+                setTypes(res.data?.types || []);
+                setSources(res.data?.sources || []);
             } catch (e) {
-                console.log("Dropdown load error:", e.response?.data || e.message);
+                console.log("Dropdown load error:", e.response?.status, e.response?.data || e.message);
             }
         };
+
         loadDropdowns();
     }, []);
 
-    // FUNKCIJA ZA DINAMIČKI PRIKAZ STATUSA (DODATO)
-    const renderStatus = (verifications) => {
-        if (!verifications || verifications.length === 0) return null;
-        const v = verifications[0];
 
-        switch (v.status_verification_id) {
-            case 1:
-                return <div className="mt-3 text-xs text-yellow-600 font-semibold">Pending</div>;
-            case 2:
-                return <div className="mt-3 text-xs text-green-700 font-semibold">Verified</div>;
-            case 3:
-                return (
-                    <div className="mt-3">
-                        <div className="text-xs text-red-600 font-semibold">Rejected </div>
-                        {v.note && <div className="text-[10px] text-red-500 italic mt-1">Reason: {v.note}</div>}
-                    </div>
-                );
-            default:
-                return null;
+    // FUNKCIJA ZA DINAMIČKI PRIKAZ STATUSA (DODATO)
+    // const renderStatus = (verifications) => {
+    //     if (!verifications || verifications.length === 0) return null;
+    //     const v = verifications[0];
+
+    //     switch (v.status_verification_id) {
+    //         case 1:
+    //             return <div className="mt-3 text-xs text-yellow-600 font-semibold">Pending</div>;
+    //         case 2:
+    //             return <div className="mt-3 text-xs text-green-700 font-semibold">Verified</div>;
+    //         case 3:
+    //             return (
+    //                 <div className="mt-3">
+    //                     <div className="text-xs text-red-600 font-semibold">Rejected </div>
+    //                     {v.note && <div className="text-[10px] text-red-500 italic mt-1">Reason: {v.note}</div>}
+    //                 </div>
+    //             );
+    //         default:
+    //             return null;
+    //     }
+    // };
+
+    const renderStatus = (verifications) => {
+        const v = getLatestVerification(verifications);
+        if (!v) return null;
+
+        switch (Number(v.status_verification_id)) {
+            case 1: return <div className="mt-3 text-xs text-yellow-600 font-semibold">Pending</div>;
+            case 2: return <div className="mt-3 text-xs text-green-700 font-semibold">Verified</div>;
+            case 3: return (
+                <div className="mt-3">
+                    <div className="text-xs text-red-600 font-semibold">Rejected</div>
+                    {v.note && <div className="text-[10px] text-red-500 italic mt-1">Reason: {v.note}</div>}
+                </div>
+            );
+            default: return null;
         }
     };
+
 
     const getLatestVerification = (verifications = []) => {
         if (!Array.isArray(verifications) || verifications.length === 0) return null;
@@ -130,11 +156,10 @@ const Competencies = () => {
 
         setIsEditing(true);
         setEditingId(comp.id);
-
         setFormData({
             name: comp.name || "",
             level: comp.level ?? "",
-            acquired_at: comp.acquired_at ?? "",
+            acquired_at: toDateInputValue(comp.acquired_at),
             institution_id: String(comp.institution?.id ?? comp.institution_id ?? ""),
             type_id: String(comp.type?.id ?? comp.type_id ?? ""),
             source_id: String(comp.source?.id ?? comp.source_id ?? ""),
@@ -403,7 +428,7 @@ const Competencies = () => {
                                 </select>
                             </div>
 
-                            <div>
+                            {/* <div>
                                 <label className="text-sm font-medium">Source</label>
                                 <select
                                     className="w-full border rounded-md px-3 py-2"
@@ -416,6 +441,23 @@ const Competencies = () => {
                                         <option key={s.id} value={s.id}>{s.name}</option>
                                     ))}
                                 </select>
+                            </div> */}
+                            <div>
+                                <label className="text-sm font-medium">Source</label>
+                                <select
+                                    disabled
+                                    className="w-full border rounded-md px-3 py-2 bg-gray-100 text-gray-500 cursor-not-allowed"
+                                    value={formData.source_id}
+                                >
+                                    <option value="">Select Source</option>
+                                    {sources.map(s => (
+                                        <option key={s.id} value={s.id}>{s.name}</option>
+                                    ))}
+                                </select>
+
+                                <p className="text-xs text-gray-400 mt-1">
+                                    Source cannot be changed after creation.
+                                </p>
                             </div>
 
                             <div>

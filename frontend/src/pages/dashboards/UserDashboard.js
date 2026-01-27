@@ -69,6 +69,7 @@ const UserDashboard = () => {
             institution_id: formData.institution_id,
             type_id: formData.type_id,
             source_id: formData.source_id,
+            acquired_at: formData.acquired_at || null,
             evidence: formData.evidence
         };
         try {
