@@ -43,9 +43,11 @@ Route::delete('/competencies/{id}', [CompetencyController::class, 'destroy']);
 Route::get('/public-profile/{token}', [UserController::class, 'publicProfileByToken']);
 Route::middleware('auth:sanctum')->post('/generate-share-link/{id}', [UserController::class, 'generateShareLink']);
 
-Route::middleware('auth:sanctum')->group(function() {
+Route::middleware('auth:sanctum')->group(function () {
     Route::get('/moderator/pending-verifications', [VerificationController::class, 'index']);
     Route::post('/moderator/verify/{id}', [VerificationController::class, 'verify']);
     Route::post('/moderator/reject/{id}', [VerificationController::class, 'reject']);
+    Route::get('/moderator/verification-history', [VerificationController::class, 'history']); // ✅ OVDE
 });
+
 

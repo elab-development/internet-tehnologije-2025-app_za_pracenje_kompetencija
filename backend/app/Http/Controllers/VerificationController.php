@@ -11,7 +11,8 @@ use Illuminate\Support\Facades\Auth;
 class VerificationController extends Controller
 {
     // Prikaz svih verifikacija za moderatora
-    public function index() {
+    public function index()
+    {
         try {
             $user = auth()->user();
             if ($user->role === 'moderator') {
@@ -64,10 +65,10 @@ class VerificationController extends Controller
         if ($user->role === 'moderator' || $verification->competency->user_id === $user->id) {
             return $verification->load(['competency', 'moderator', 'status']);
         }
-        return response()->json(['message'=>'Unauthorized',403]);
+        return response()->json(['message' => 'Unauthorized', 403]);
     }
 
-    
+
     public function update(Request $request, $id)
     {
 
@@ -76,35 +77,38 @@ class VerificationController extends Controller
 
     //verifikovanje komp. od strane moderatora
     public function verify(Request $request, $id)
-{
-    $user = Auth::user();
-    if ($user->role !== 'moderator') {
-        return response()->json(['message' => 'Unauthorized'], 403);
+    {
+        $user = Auth::user();
+        if ($user->role !== 'moderator') {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $verification = Verification::findOrFail($id);
+
+        // dozvoli samo ako je na čekanju
+        if ($verification->status_verification_id != 1) {
+            return response()->json(['message' => 'Only waiting verifications can be approved.'], 409);
+        }
+
+        $verification->update([
+            'status_verification_id' => 2,           // Approved
+            'moderator_id' => $user->id,
+            'user_id' => $verification->competency->user_id, // +++
+            'verified_at' => now()->toDateString(),  // pošto je kolona DATE
+            'note' => $request->note ?? 'Approved.',
+            'competency_id' => $verification->competency_id, //+++
+        ]);
+
+        // updated_at je automatski "poslednje vreme promene statusa"
+
+        return response()->json([
+            'message' => 'Competency successfully verified!',
+            'verification' => $verification->fresh()
+        ]);
     }
 
-    $verification = Verification::findOrFail($id);
-
-    // dozvoli samo ako je na čekanju
-    if ($verification->status_verification_id != 1) {
-        return response()->json(['message' => 'Only waiting verifications can be approved.'], 409);
-    }
-
-    $verification->update([
-        'status_verification_id' => 2,           // Approved
-        'moderator_id' => $user->id,
-        'verified_at' => now()->toDateString(),  // pošto je kolona DATE
-        'note' => $request->note ?? 'Approved.',
-    ]);
-
-    // updated_at je automatski "poslednje vreme promene statusa"
-
-    return response()->json([
-        'message' => 'Competency successfully verified!',
-        'verification' => $verification->fresh()
-    ]);
-}
-
-public function reject(Request $request, $id) {
+    public function reject(Request $request, $id)
+    {
         $request->validate([
             'note' => 'required|string|min:5' // Razlog je obavezan pri odbijanju
         ]);
@@ -112,11 +116,33 @@ public function reject(Request $request, $id) {
         $verification->update([
             'status_verification_id' => 3, // 3 = Rejected
             'moderator_id' => auth()->id(),
+            'user_id' => $verification->competency->user_id,//+++
             'verified_at' => now(),
-            'note' => $request->note
+            'note' => $request->note,
+            'competency_id' => $verification->competency_id, //+++
         ]);
         return response()->json(['message' => 'Competency rejected.']);
     }
+
+    public function history()
+    {
+        $user = auth()->user();
+
+        if ($user->role !== 'moderator') {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        return Verification::with([
+            'competency.user',
+            'moderator',
+            'status'
+        ])
+            ->where('moderator_id', $user->id)         
+            ->whereIn('status_verification_id', [2, 3])
+            ->orderBy('verified_at', 'desc')
+            ->get();
+    }
+
 
 
 }
