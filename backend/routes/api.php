@@ -38,18 +38,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('verifications', VerificationController::class);
 });
 
-//Route::delete('/users/{id}', [UserController::class, 'destroy']); // ruta za brisanje naloga
-
-Route::middleware('auth:sanctum')->delete('/users/{id}', [UserController::class, 'destroy']);
-
+Route::delete('/users/{id}', [UserController::class, 'destroy']); // ruta za brisanje naloga
 
 Route::delete('/competencies/{id}', [CompetencyController::class, 'destroy']);
 
 
 Route::get('/public-profile/{token}', [UserController::class, 'publicProfileByToken']);
-
-
-
 Route::middleware('auth:sanctum')->post('/generate-share-link/{id}', [UserController::class, 'generateShareLink']);
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -61,11 +55,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
 //dodato za update
 
-// Route::middleware('auth:sanctum')->group(function () {
-//     Route::get('/competencies', [CompetencyController::class, 'index']);
-//     Route::put('/competencies/{id}', [CompetencyController::class, 'update']);
-//     Route::delete('/competencies/{id}', [CompetencyController::class, 'destroy']);
-// });
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/competencies', [CompetencyController::class, 'index']);
+    Route::put('/competencies/{id}', [CompetencyController::class, 'update']);
+    Route::delete('/competencies/{id}', [CompetencyController::class, 'destroy']);
+});
 
 
 Route::middleware('auth:sanctum')->group(function () {
