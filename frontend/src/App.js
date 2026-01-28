@@ -32,10 +32,11 @@ function App() {
 
         {/* za one koji otvore link za deljenje profila */}
         <Route path="/public-profile/:token" element={<PublicProfile />} />
-      
-<Route path="/guest" element={<GuestDashboard />}>
-  <Route path="public-profile/:token" element={<PublicProfile />} />
-</Route>
+
+        <Route path="/guest" element={<GuestDashboard />}>
+          <Route path="u/:token" element={<PublicProfile />} />
+        </Route>
+
       </Routes>
     </Router>
   );

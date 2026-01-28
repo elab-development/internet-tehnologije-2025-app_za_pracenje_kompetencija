@@ -64,33 +64,69 @@ class UserController extends Controller
         ], 200);
     }
 
+    // public function publicProfileByToken($token)
+    // {
+    //     $user=User::where('share_token',$token)->firstOrFail();
+
+    //     return response()->json([
+    //         'name' => $user->name,
+    //         'surname' => $user->surname,
+    //         'competencies' => $user->competencies()
+    //             ->with(['institution', 'type', 'source', 'verifications.status'])
+    //             ->get()
+    //     ], 200);
+    // }
+
     public function publicProfileByToken($token)
     {
-        $user=User::where('share_token',$token)->firstOrFail();
+        $user = User::where('share_token', $token)->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'Profile not found'], 404);
+        }
+
+        $competencies = $user->competencies()
+            ->with([
+                'institution',
+                'type',
+                'source',
+                'verifications' => function ($q) {
+                    $q->orderByDesc('id'); // da prva bude "latest"
+                }
+            ])
+            ->get()
+            ->filter(function ($comp) {
+                $latest = $comp->verifications->first();
+                return $latest && (int)$latest->status_verification_id === 2; // Approved only
+            })
+            ->values();
+
 
         return response()->json([
             'name' => $user->name,
             'surname' => $user->surname,
-            'competencies' => $user->competencies()
-                ->with(['institution', 'type', 'source', 'verifications.status'])
-                ->get()
+            'email' => $user->email,
+            'description' => $user->description,
+            'competencies' => $competencies
         ], 200);
     }
 
-    public function generateShareLink($id){
-    $user = User::findOrFail($id);
 
-    $token = Str::uuid()->toString(); // generiše jedinstveni token
+    public function generateShareLink($id)
+    {
+        $user = User::findOrFail($id);
 
-    $user->share_token = $token;
-    $user->save();
+        $token = Str::uuid()->toString(); // generiše jedinstveni token
 
-    // vrati link korisniku
-    $link = url("/public-profile/$token");
+        $user->share_token = $token;
+        $user->save();
 
-    return response()->json([
-        'message'=>'Link successfully generated ✅',
-        'link'=>$link
-    ]);
-}
+        // vrati link korisniku
+        $link = url("/public-profile/$token");
+
+        return response()->json([
+            'message' => 'Link successfully generated ✅',
+            'link' => $link
+        ]);
+    }
 }
