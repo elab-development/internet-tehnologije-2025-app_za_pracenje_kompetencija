@@ -34,5 +34,4 @@ class InstitutionController extends Controller
 
 
 
-
 }

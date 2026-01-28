@@ -14,11 +14,15 @@ const AdminDashboard = () => {
         password: '',
     });
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isInstitutionModalOpen, setIsInstitutionModalOpen] = useState(false);
+    const [isCompetencyTypeModalOpen, setIsCompetencyTypeModalOpen] = useState(false);
 
     const [systemType, setSystemType] = useState('institutions');
 
     const [institutions, setInstitutions] = useState([]);
     const [newInstitution, setNewInstitution] = useState('');
+    const [competencyTypes, setCompetencyTypes] = useState([]);
+    const [newCompetencyType, setNewCompetencyType] = useState('');
     const [competencies, setCompetencies] = useState([]);
 
     const [systemLogs, setSystemLogs] = useState([]);
@@ -173,30 +177,42 @@ const AdminDashboard = () => {
         try {
             const res = await api.get('/institutions');
             setInstitutions(res.data);
-            setView('institutions');
         } catch {
             alert('Failed to load institutions');
         }
     };
 
 
-
-    const fetchCompetencies = async () => {
+    const fetchCompetencyTypes = async () => {
         try {
-            const res = await api.get('/all-competencies');
-            setCompetencies(res.data);
-            setView('competencies');
+            const res = await api.get('/competency-types');
+            setCompetencyTypes(res.data);
         } catch {
-            alert('Failed to load competencies');
+            alert('Failed to load competency types');
         }
     };
 
 
-    const fetchSystemData = (type) => {
-        if (type === 'institutions') {
-            fetchInstitutions();
-        } else if (type === 'competencies') {
-            fetchCompetencies();
+    const addInstitution = async () => {
+        if (!newInstitution.trim()) return;
+
+        try {
+            const res = await api.post('/institutions', {
+                name: newInstitution
+            });
+
+            setInstitutions([...institutions, res.data]);
+            setNewInstitution('');
+            setIsInstitutionModalOpen(false);
+
+            await logAction({
+                action: 'Create Institution',
+                entity: 'Institution',
+                entity_id: res.data.id,
+                description: `Institution "${res.data.name}" created`
+            });
+        } catch {
+            alert('Failed to add institution');
         }
     };
 
@@ -226,20 +242,6 @@ const AdminDashboard = () => {
         }
     };
 
-    // const deleteCompetency = async (id) => {
-    //     if (!window.confirm('Delete this competency?')) return;
-
-    //     try {
-    //         await api.delete(`/competencies/${id}`);
-    //         setCompetencies(competencies.filter(c => c.id !== id));
-    //     } catch {
-    //         alert('Failed to delete competency');
-    //     }
-    // };
-
-    // const editCompetency = (id) => {
-    //     alert('Edit competency (ID: ' + id + ') – to be implemented');
-    // };
     const fetchSystemLogs = async () => {
         try {
             const res = await api.get('/system-logs');
@@ -250,7 +252,40 @@ const AdminDashboard = () => {
         }
     };
 
+    const addCompetencyType = async () => {
+        if (!newCompetencyType.trim()) return;
+        try {
+            const res = await api.post('/competency-types', { name: newCompetencyType });
+            setCompetencyTypes([...competencyTypes, res.data]);
+            setNewCompetencyType('');
+            setIsCompetencyTypeModalOpen(false);
+        } catch (err) {
+            alert('Failed to add competency type');
+        }
+    };
 
+    const editCompetencyType = async (id) => {
+        const newName = prompt('Enter new type name:');
+        if (!newName) return;
+        try {
+            const res = await api.put(`/competency-types/${id}`, { name: newName });
+            setCompetencyTypes(
+                competencyTypes.map(t => t.id === id ? res.data : t)
+            );
+        } catch {
+            alert('Failed to update competency type');
+        }
+    };
+
+    const deleteCompetencyType = async (id) => {
+        if (!window.confirm('Delete this competency type?')) return;
+        try {
+            await api.delete(`/competency-types/${id}`);
+            setCompetencyTypes(competencyTypes.filter(t => t.id !== id));
+        } catch {
+            alert('Failed to delete competency type');
+        }
+    };
 
 
 
@@ -283,14 +318,18 @@ const AdminDashboard = () => {
                     </div>
 
                     <div
-                        onClick={() => fetchSystemData('institutions')}
+                        onClick={() => {
+                            setView('systemData');
+                            fetchInstitutions();
+                            fetchCompetencyTypes();
+                        }}
                         className="bg-white p-6 rounded-lg shadow-md border-l-4 border-green-500 cursor-pointer hover:bg-green-50 transition"
                     >
                         <h3 className="font-bold text-lg text-green-700 underline">
                             Manage system data
                         </h3>
                         <p className="text-gray-600">
-                            Manage competency categories and dictionaries.
+                            Manage competency categories and institutions.
                         </p>
                     </div>
 
@@ -452,72 +491,176 @@ const AdminDashboard = () => {
                 </div>
             )}
 
+            {isInstitutionModalOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                    <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-sm animate-fade-in">
+                        <h2 className="text-xl font-bold mb-4 text-indigo-900">
+                            Add New Institution
+                        </h2>
 
+                        <input
+                            type="text"
+                            className="w-full p-2 border border-gray-300 rounded mb-4 focus:ring-2 focus:ring-indigo-500 outline-none"
+                            placeholder="Enter institution name"
+                            value={newInstitution}
+                            onChange={(e) => setNewInstitution(e.target.value)}
+                        />
 
-            {view === 'institutions' && (
-                <div className="bg-white rounded-lg shadow-md p-6">
-                    <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-xl font-bold mb-4">Institutions</h2>
-                        <button onClick={() => setView('default')} className="text-blue-600 hover:underline mb-4">← Back to main menu</button>
+                        <div className="flex justify-end gap-2">
+                            <button
+                                onClick={() => {
+                                    setNewInstitution('');
+                                    setIsInstitutionModalOpen(false);
+                                }}
+                                className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium"
+                            >
+                                Cancel
+                            </button>
+
+                            <button
+                                onClick={addInstitution}
+                                className="bg-indigo-600 text-white px-6 py-2 rounded shadow hover:bg-indigo-700 font-bold"
+                            >
+                                Save
+                            </button>
+                        </div>
                     </div>
-
-                    <table className="w-full border">
-                        <thead className="bg-gray-200">
-                            <tr>
-                                <th className="p-3 border">Name</th>
-                                <th className="p-3 border">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {institutions.map(inst => (
-                                <tr key={inst.id} className="hover:bg-gray-50">
-                                    <td className="p-3 border">{inst.name}</td>
-                                    <td className="p-3 border flex gap-2">
-                                        <button onClick={() => editInstitution(inst.id)} className="text-blue-600 hover:underline text-sm">Edit</button>
-                                        <button onClick={() => deleteInstitution(inst.id)} className="text-red-600 hover:underline text-sm">Delete</button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
                 </div>
             )}
-            {/* {view === 'competencies' && (
-                <div className="bg-white rounded-lg shadow-md p-6">
-                    <h2 className="text-xl font-bold mb-4">Competencies</h2>
-                    <button onClick={() => setView('default')} className="text-blue-600 hover:underline mb-4">← Back</button>
 
-                    <table className="w-full border">
-                        <thead className="bg-gray-200">
-                            <tr>
-                                <th className="p-3 border">User</th>
-                                <th className="p-3 border">Name</th>
-                                <th className="p-3 border">Level</th>
-                                <th className="p-3 border">Institution</th>
-                                <th className="p-3 border">Type</th>
-                                <th className="p-3 border">Source</th>
-                                <th className="p-3 border">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {competencies.map(comp => (
-                                <tr key={comp.id} className="hover:bg-gray-50">
-                                    <td className="p-3 border">{comp.user?.name} {comp.user?.surname}</td>
-                                    <td className="p-3 border">{comp.name}</td>
-                                    <td className="p-3 border">{comp.level}</td>
-                                    <td className="p-3 border">{comp.institution?.name}</td>
-                                    <td className="p-3 border">{comp.type?.name}</td>
-                                    <td className="p-3 border">{comp.source?.name}</td>
-                                    <td className="p-3 border flex gap-2">
-                                        <button onClick={() => editCompetency(comp.id)} className="text-blue-600 hover:underline text-sm">Edit</button>
-                                        <button onClick={() => deleteCompetency(comp.id)} className="text-red-600 hover:underline text-sm">Delete</button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+            {isCompetencyTypeModalOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                    <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-sm animate-fade-in">
+                        <h2 className="text-xl font-bold mb-4 text-indigo-900">Add New Competency Type</h2>
+                        <input
+                            type="text"
+                            className="w-full p-2 border border-gray-300 rounded mb-4 focus:ring-2 focus:ring-indigo-500 outline-none"
+                            placeholder="Enter type name"
+                            value={newCompetencyType}
+                            onChange={(e) => setNewCompetencyType(e.target.value)}
+                        />
+                        <div className="flex justify-end gap-2">
+                            <button
+                                onClick={() => { setNewCompetencyType(''); setIsCompetencyTypeModalOpen(false); }}
+                                className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={addCompetencyType}
+                                className="bg-indigo-600 text-white px-6 py-2 rounded shadow hover:bg-indigo-700 font-bold"
+                            >
+                                Save
+                            </button>
+                        </div>
+                    </div>
                 </div>
-            )} */}
+            )}
+
+            {view === 'systemData' && (
+                <div className="space-y-10">
+
+                    <div className="flex justify-end mb-4">
+                        <button
+                            onClick={() => setView('default')}
+                            className="text-blue-600 hover:underline font-medium"
+                        >
+                            ← Back to main menu
+                        </button>
+                    </div>
+
+                    {/* institutions */}
+                    <div className="bg-white rounded-lg shadow-md p-6">
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-xl font-bold">Institutions</h2>
+
+                            <button
+                                onClick={() => setIsInstitutionModalOpen(true)}
+                                className="bg-green-500 text-white px-4 py-2 rounded shadow hover:bg-green-600 font-semibold"
+                            >
+                                + Add
+                            </button>
+                        </div>
+
+                        <table className="w-full border">
+                            <thead className="bg-gray-200">
+                                <tr>
+                                    <th className="p-3 border">Name</th>
+                                    <th className="p-3 border">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {institutions.map(inst => (
+                                    <tr key={inst.id} className="hover:bg-gray-50">
+                                        <td className="p-3 border">{inst.name}</td>
+                                        <td className="p-3 border flex gap-2">
+                                            <button
+                                                onClick={() => editInstitution(inst.id)}
+                                                className="text-blue-600 hover:underline text-sm"
+                                            >
+                                                Edit
+                                            </button>
+                                            <button
+                                                onClick={() => deleteInstitution(inst.id)}
+                                                className="text-red-600 hover:underline text-sm"
+                                            >
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {/* competency types */}
+                    <div className="bg-white rounded-lg shadow-md p-6">
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-xl font-bold">Competency Types</h2>
+
+                            <button
+                                onClick={() => setIsCompetencyTypeModalOpen(true)}
+                                className="bg-green-500 text-white px-4 py-2 rounded shadow hover:bg-green-600 font-semibold"
+                            >
+                                + Add
+                            </button>
+                        </div>
+
+                        <table className="w-full border">
+                            <thead className="bg-gray-200">
+                                <tr>
+                                    <th className="p-3 border">Name</th>
+                                    <th className="p-3 border">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {competencyTypes.map(type => (
+                                    <tr key={type.id} className="hover:bg-gray-50">
+                                        <td className="p-3 border">{type.name}</td>
+                                        <td className="p-3 border flex gap-2">
+                                            <button
+                                                onClick={() => editCompetencyType(type.id)}
+                                                className="text-blue-600 hover:underline text-sm"
+                                            >
+                                                Edit
+                                            </button>
+                                            <button
+                                                onClick={() => deleteCompetencyType(type.id)}
+                                                className="text-red-600 hover:underline text-sm"
+                                            >
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            )}
+
+
 
             {view === 'systemLogs' && (
                 <div className="bg-white rounded-lg shadow-md p-6 animate-fade-in">
@@ -564,10 +707,11 @@ const AdminDashboard = () => {
                         </tbody>
                     </table>
                 </div>
-            )}
+            )
+            }
 
 
-        </div>
+        </div >
     );
 };
 

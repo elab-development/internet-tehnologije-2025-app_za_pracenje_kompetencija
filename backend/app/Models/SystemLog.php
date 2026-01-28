@@ -22,4 +22,6 @@ class SystemLog extends Model
     {
         return $this->belongsTo(User::class, 'performed_by');
     }
+
+    
 }

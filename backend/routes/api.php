@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\InstitutionController;
 use App\Http\Controllers\SystemLogController;
+use App\Http\Controllers\CompetencyTypeController;
 
 
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -71,4 +72,11 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/system-logs', [SystemLogController::class, 'systemLogs']);
     Route::post('/system-logs', [SystemLogController::class, 'store']);
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/competency-types', [CompetencyTypeController::class, 'index']);
+    Route::post('/competency-types', [CompetencyTypeController::class, 'store']);
+    Route::put('/competency-types/{id}', [CompetencyTypeController::class, 'update']);
+    Route::delete('/competency-types/{id}', [CompetencyTypeController::class, 'destroy']);
 });

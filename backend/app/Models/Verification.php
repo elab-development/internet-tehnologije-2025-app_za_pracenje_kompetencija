@@ -12,7 +12,8 @@ class Verification extends Model
         'request',
         'moderator_id',
         'verified_at',
-        'competency_id'
+        'competency_id',
+        'note',
     ];
 
     public function competency()
