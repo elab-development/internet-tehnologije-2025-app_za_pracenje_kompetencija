@@ -99,6 +99,15 @@ class VerificationController extends Controller
             'competency_id' => $verification->competency_id, //+++
         ]);
 
+        \App\Models\SystemLog::create([
+            'action' => 'Verify Competency',
+            'entity' => 'Verification',
+            'entity_id' => $verification->id,
+            'performed_by' => $user->id,
+            'performed_by_role' => $user->role,
+            'description' => "Competency ID {$verification->competency_id} verified by moderator.",
+        ]);
+
         // updated_at je automatski "poslednje vreme promene statusa"
 
         return response()->json([
@@ -109,6 +118,8 @@ class VerificationController extends Controller
 
     public function reject(Request $request, $id)
     {
+        $user = auth()->user();
+
         $request->validate([
             'note' => 'required|string|min:5' // Razlog je obavezan pri odbijanju
         ]);
@@ -117,10 +128,20 @@ class VerificationController extends Controller
             'status_verification_id' => 3, // 3 = Rejected
             'moderator_id' => auth()->id(),
             'user_id' => $verification->competency->user_id,//+++
-            'verified_at' => now(),
+            'verified_at' => now()->toDateString(),
             'note' => $request->note,
             'competency_id' => $verification->competency_id, //+++
         ]);
+
+        \App\Models\SystemLog::create([
+            'action' => 'Reject Competency',
+            'entity' => 'Verification',
+            'entity_id' => $verification->id,
+            'performed_by' => auth()->id(),
+            'performed_by_role' => $user->role,
+            'description' => "Competency ID {$verification->competency_id} rejected by moderator.",
+        ]);
+
         return response()->json(['message' => 'Competency rejected.']);
     }
 
@@ -137,11 +158,18 @@ class VerificationController extends Controller
             'moderator',
             'status'
         ])
-            ->where('moderator_id', $user->id)         
+            ->where('moderator_id', $user->id)
             ->whereIn('status_verification_id', [2, 3])
             ->orderBy('verified_at', 'desc')
             ->get();
     }
+
+    public function systemOverview()
+    {
+        $verifications = Verification::with(['user', 'competency', 'statusVerification'])->get();
+        return response()->json($verifications);
+    }
+
 
 
 

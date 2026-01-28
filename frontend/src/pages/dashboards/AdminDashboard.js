@@ -15,16 +15,35 @@ const AdminDashboard = () => {
     });
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+    const [systemType, setSystemType] = useState('institutions');
+
+    const [institutions, setInstitutions] = useState([]);
+    const [newInstitution, setNewInstitution] = useState('');
+    const [competencies, setCompetencies] = useState([]);
+
+    const [systemLogs, setSystemLogs] = useState([]);
+
     // Definisanje ID-a trenutnog admina iz localStorage-a kako bismo znali koji profil je tvoj 
     const currentAdminId = localStorage.getItem('user_id');
+    const api = axios.create({
+        baseURL: 'http://127.0.0.1:8000/api',
+    });
+
+    api.interceptors.request.use((config) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    });
 
     const fetchUsers = async () => {
         try {
-            const response = await axios.get('http://127.0.0.1:8000/api/users');
+            const response = await api.get('/users');
             setUsers(response.data);
             setView('users');
         } catch (error) {
-            console.error("Greška pri učitavanju korisnika", error);
+            console.error("Error during loading users", error);
         }
     };
 
@@ -32,7 +51,15 @@ const AdminDashboard = () => {
     const deleteUser = async (userId) => {
         if (window.confirm("Are you sure you want to delete this profile?")) {
             try {
-                await axios.delete(`http://127.0.0.1:8000/api/users/${userId}`);
+                await api.delete(`/users/${userId}`);
+
+                await logAction({
+                    action: 'Delete User',
+                    entity: 'User',
+                    entity_id: userId,
+                    description: 'User deleted from admin panel',
+                });
+
                 // Filtriramo listu tako da odmah sklonimo obrisanog korisnika iz prikaza
                 setUsers(users.filter(user => user.id !== userId));
                 alert("User deleted successfully!");
@@ -45,8 +72,19 @@ const AdminDashboard = () => {
 
     const changeRole = async (userId, newRole) => {
         try {
-            await axios.patch(`http://127.0.0.1:8000/api/users/${userId}/role`, { role: newRole });
-            const response = await axios.get('http://127.0.0.1:8000/api/users');
+            //menja rolu korisnika
+            await api.patch(`/users/${userId}/role`, { role: newRole });
+
+            // Logujemo akciju
+            await logAction({
+                action: 'Change Role',
+                entity: 'User',
+                entity_id: userId,
+                description: `Role changed to ${newRole}`,
+            });
+
+            //psvezi listu korisnika
+            const response = await api.get('/users');
             setUsers(response.data);
             alert(`Role was successfully changed to ${newRole}`);
         } catch (error) {
@@ -96,8 +134,15 @@ const AdminDashboard = () => {
         }
 
         try {
-            const response = await axios.put(`http://127.0.0.1:8000/api/users/${userId}`, dataToSend);
+            const response = await api.put(`/users/${userId}`, dataToSend);
             if (response.status === 200) {
+                await logAction({
+                    action: 'Update Profile',
+                    entity: 'User',
+                    entity_id: userId,
+                    description: 'Admin updated their profile',
+                });
+
                 alert("Profile updated successfully!");
                 setIsModalOpen(false);
             }
@@ -109,6 +154,106 @@ const AdminDashboard = () => {
             }
         }
     };
+
+
+    const logAction = async ({ action, entity, entity_id, description }) => {
+        try {
+            await api.post('/system-logs', {
+                action,
+                entity,
+                entity_id,
+                description,
+            });
+        } catch (error) {
+            console.error('Failed to log action', error);
+        }
+    };
+
+    const fetchInstitutions = async () => {
+        try {
+            const res = await api.get('/institutions');
+            setInstitutions(res.data);
+            setView('institutions');
+        } catch {
+            alert('Failed to load institutions');
+        }
+    };
+
+
+
+    const fetchCompetencies = async () => {
+        try {
+            const res = await api.get('/all-competencies');
+            setCompetencies(res.data);
+            setView('competencies');
+        } catch {
+            alert('Failed to load competencies');
+        }
+    };
+
+
+    const fetchSystemData = (type) => {
+        if (type === 'institutions') {
+            fetchInstitutions();
+        } else if (type === 'competencies') {
+            fetchCompetencies();
+        }
+    };
+
+    const deleteInstitution = async (id) => {
+        if (!window.confirm('Delete this institution?')) return;
+
+        try {
+            await api.delete(`/institutions/${id}`);
+            setInstitutions(institutions.filter(i => i.id !== id));
+        } catch {
+            alert('Failed to delete institution');
+        }
+    };
+
+
+    const editInstitution = async (id) => {
+        const newName = prompt('Enter new institution name:');
+        if (!newName) return;
+
+        try {
+            const res = await api.put(`/institutions/${id}`, { name: newName });
+            setInstitutions(
+                institutions.map(i => i.id === id ? res.data : i)
+            );
+        } catch {
+            alert('Failed to update institution');
+        }
+    };
+
+    // const deleteCompetency = async (id) => {
+    //     if (!window.confirm('Delete this competency?')) return;
+
+    //     try {
+    //         await api.delete(`/competencies/${id}`);
+    //         setCompetencies(competencies.filter(c => c.id !== id));
+    //     } catch {
+    //         alert('Failed to delete competency');
+    //     }
+    // };
+
+    // const editCompetency = (id) => {
+    //     alert('Edit competency (ID: ' + id + ') – to be implemented');
+    // };
+    const fetchSystemLogs = async () => {
+        try {
+            const res = await api.get('/system-logs');
+            setSystemLogs(res.data);
+            setView('systemLogs');
+        } catch (error) {
+            alert('Failed to load system logs');
+        }
+    };
+
+
+
+
+
 
     return (
         <div className="min-h-screen p-8 bg-gray-100">
@@ -137,17 +282,32 @@ const AdminDashboard = () => {
                         <p className="text-gray-600">Click here to open list of all users and to change their roles.</p>
                     </div>
 
-                    <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-green-500 opacity-50">
-                        <h3 className="font-bold text-lg">View statistics</h3>
+                    <div
+                        onClick={() => fetchSystemData('institutions')}
+                        className="bg-white p-6 rounded-lg shadow-md border-l-4 border-green-500 cursor-pointer hover:bg-green-50 transition"
+                    >
+                        <h3 className="font-bold text-lg text-green-700 underline">
+                            Manage system data
+                        </h3>
+                        <p className="text-gray-600">
+                            Manage competency categories and dictionaries.
+                        </p>
                     </div>
 
-                    <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-yellow-500 opacity-50">
-                        <h3 className="font-bold text-lg">Verify competencies</h3>
+
+                    <div
+                        onClick={fetchSystemLogs}
+                        className="bg-white p-6 rounded-lg shadow-md border-l-4 border-yellow-500 cursor-pointer hover:bg-yellow-50 transition"
+                    >
+                        <h3 className="font-bold text-lg text-yellow-700 underline">
+                            System overview
+                        </h3>
+                        <p className="text-gray-600">
+                            View moderator actions and system events.
+                        </p>
                     </div>
 
-                    <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-red-500 opacity-50">
-                        <h3 className="font-bold text-lg">Edit all competencies</h3>
-                    </div>
+
                 </div>
             )}
 
@@ -194,12 +354,12 @@ const AdminDashboard = () => {
                                             <td className="p-3 border">{user.email}</td>
                                             <td className="p-3 border text-sm font-bold text-indigo-600 uppercase">{user.role}</td>
                                             <td className="p-3 border flex gap-2">
-                                                
+
                                                 {user.role !== 'admin' ? ( // Mogusnot da admin brise naloge usera i moderatora 
                                                     <>
                                                         <button
                                                             onClick={() => changeRole(user.id, 'moderator')}
-                                                            className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded text-xs hover:bg-indigo-200" 
+                                                            className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded text-xs hover:bg-indigo-200"
                                                         >
                                                             Moderator
                                                         </button>
@@ -209,13 +369,13 @@ const AdminDashboard = () => {
                                                         >
                                                             User
                                                         </button>
-                                                        
+
                                                         <button
                                                             onClick={() => deleteUser(user.id)}
-                                                            className="bg-red-100 text-red-600 px-3 py-1 rounded text-xs hover:bg-red-200" 
+                                                            className="bg-red-100 text-red-600 px-3 py-1 rounded text-xs hover:bg-red-200"
                                                         >
-                                                            Delete 
-                                                        </button> 
+                                                            Delete
+                                                        </button>
                                                     </>
                                                 ) : (
                                                     // Ako je korisnik admin, ispisujemo "Protected"
@@ -291,6 +451,122 @@ const AdminDashboard = () => {
                     </div>
                 </div>
             )}
+
+
+
+            {view === 'institutions' && (
+                <div className="bg-white rounded-lg shadow-md p-6">
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-xl font-bold mb-4">Institutions</h2>
+                        <button onClick={() => setView('default')} className="text-blue-600 hover:underline mb-4">← Back to main menu</button>
+                    </div>
+
+                    <table className="w-full border">
+                        <thead className="bg-gray-200">
+                            <tr>
+                                <th className="p-3 border">Name</th>
+                                <th className="p-3 border">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {institutions.map(inst => (
+                                <tr key={inst.id} className="hover:bg-gray-50">
+                                    <td className="p-3 border">{inst.name}</td>
+                                    <td className="p-3 border flex gap-2">
+                                        <button onClick={() => editInstitution(inst.id)} className="text-blue-600 hover:underline text-sm">Edit</button>
+                                        <button onClick={() => deleteInstitution(inst.id)} className="text-red-600 hover:underline text-sm">Delete</button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
+            {/* {view === 'competencies' && (
+                <div className="bg-white rounded-lg shadow-md p-6">
+                    <h2 className="text-xl font-bold mb-4">Competencies</h2>
+                    <button onClick={() => setView('default')} className="text-blue-600 hover:underline mb-4">← Back</button>
+
+                    <table className="w-full border">
+                        <thead className="bg-gray-200">
+                            <tr>
+                                <th className="p-3 border">User</th>
+                                <th className="p-3 border">Name</th>
+                                <th className="p-3 border">Level</th>
+                                <th className="p-3 border">Institution</th>
+                                <th className="p-3 border">Type</th>
+                                <th className="p-3 border">Source</th>
+                                <th className="p-3 border">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {competencies.map(comp => (
+                                <tr key={comp.id} className="hover:bg-gray-50">
+                                    <td className="p-3 border">{comp.user?.name} {comp.user?.surname}</td>
+                                    <td className="p-3 border">{comp.name}</td>
+                                    <td className="p-3 border">{comp.level}</td>
+                                    <td className="p-3 border">{comp.institution?.name}</td>
+                                    <td className="p-3 border">{comp.type?.name}</td>
+                                    <td className="p-3 border">{comp.source?.name}</td>
+                                    <td className="p-3 border flex gap-2">
+                                        <button onClick={() => editCompetency(comp.id)} className="text-blue-600 hover:underline text-sm">Edit</button>
+                                        <button onClick={() => deleteCompetency(comp.id)} className="text-red-600 hover:underline text-sm">Delete</button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )} */}
+
+            {view === 'systemLogs' && (
+                <div className="bg-white rounded-lg shadow-md p-6 animate-fade-in">
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-xl font-bold">System activity log</h2>
+                        <button
+                            onClick={() => setView('default')}
+                            className="text-blue-600 hover:underline font-semibold"
+                        >
+                            ← Back to main menu
+                        </button>
+                    </div>
+
+                    <table className="w-full border">
+                        <thead className="bg-gray-200">
+                            <tr>
+                                <th className="p-3 border">Date</th>
+                                <th className="p-3 border">User</th>
+                                <th className="p-3 border">Role</th>
+                                <th className="p-3 border">Action</th>
+                                <th className="p-3 border">Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {systemLogs.map(log => (
+                                <tr key={log.id} className="hover:bg-gray-50">
+                                    <td className="p-3 border">
+                                        {new Date(log.created_at).toLocaleString()}
+                                    </td>
+                                    <td className="p-3 border">
+                                        {log.user?.name} {log.user?.surname}
+                                    </td>
+                                    <td className="p-3 border uppercase font-semibold text-sm">
+                                        {log.user?.role}
+                                    </td>
+                                    <td className="p-3 border font-medium text-indigo-700">
+                                        {log.action}
+                                    </td>
+                                    <td className="p-3 border text-gray-600">
+                                        {log.description}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
+
+
         </div>
     );
 };

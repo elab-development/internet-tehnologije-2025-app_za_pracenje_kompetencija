@@ -8,9 +8,11 @@ use App\Models\User;
 use App\Models\Competency;
 use Illuminate\Http\Request;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\InstitutionController;
+use App\Http\Controllers\SystemLogController;
 
 
-
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::get('/users', function () {
@@ -47,7 +49,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/moderator/pending-verifications', [VerificationController::class, 'index']);
     Route::post('/moderator/verify/{id}', [VerificationController::class, 'verify']);
     Route::post('/moderator/reject/{id}', [VerificationController::class, 'reject']);
-    Route::get('/moderator/verification-history', [VerificationController::class, 'history']); // ✅ OVDE
+    Route::get('/moderator/verification-history', [VerificationController::class, 'history']);
 });
 
 //dodato za update
@@ -59,4 +61,14 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('institutions', InstitutionController::class);
+    Route::get('/all-competencies', [CompetencyController::class, 'allCompetencies']);
+});
 
+
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/system-logs', [SystemLogController::class, 'systemLogs']);
+    Route::post('/system-logs', [SystemLogController::class, 'store']);
+});
