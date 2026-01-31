@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Navbar from './components/Navbar';
 import Layout from './components/Layout';
+import Header from './components/Header';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
@@ -14,6 +15,9 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 function App() {
   return (
     <Router>
+
+      <Header />
+
       <Routes>
         {/*pocetna stranica*/}
         <Route path="/" element={<Navigate to="/login" />} />
