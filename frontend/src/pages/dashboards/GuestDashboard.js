@@ -38,7 +38,7 @@ const GuestDashboard = () => {
     navigate(`/guest/u/${uuid}`);
   };
 
-  // ✅ Ako gleda profil, ne prikazuj search card
+  //Ako gleda profil, ne prikazuj search card
   if (isViewingProfile) {
     return <Outlet />;
   }
