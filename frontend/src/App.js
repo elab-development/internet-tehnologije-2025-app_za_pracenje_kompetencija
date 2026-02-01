@@ -10,6 +10,8 @@ import Competencies from './pages/Competencies';
 import Profile from './pages/Profile';
 import PublicProfile from './pages/PublicProfile';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import AdminUserProfile from './pages/AdminUserProfile';
+
 
 
 function App() {
@@ -25,6 +27,9 @@ function App() {
         {/* auth */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+
+        <Route path="/admin/users/:id" element={<AdminUserProfile />} />
+
 
         {/* DASHBOARD + CHILDREN */}
         <Route path="/dashboard" element={<Dashboard />}>

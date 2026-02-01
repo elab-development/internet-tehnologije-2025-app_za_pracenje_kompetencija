@@ -389,7 +389,35 @@ const AdminDashboard = () => {
                                     )
                                     .map((user) => (
                                         <tr key={user.id} className="hover:bg-gray-50">
-                                            <td className="p-3 border font-medium">{user.name} {user.surname}</td>
+                                            {/* <td className="p-3 border font-medium">{user.name} {user.surname}</td> */}
+                                            {/* <td className="p-3 border font-medium">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => navigate(`/admin/users/${user.id}`)}
+                                                    className="text-indigo-700 hover:underline"
+                                                    title="Open user profile"
+                                                >
+                                                    {user.name} {user.surname}
+                                                </button>
+                                            </td> */}
+                                            <td className="p-3 border font-medium">
+                                                {user.role === 'user' ? (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => navigate(`/admin/users/${user.id}`)}
+                                                        className="text-indigo-700 hover:underline"
+                                                        title="Open user profile"
+                                                    >
+                                                        {user.name} {user.surname}
+                                                    </button>
+                                                ) : (
+                                                    <span className="text-gray-500">
+                                                        {user.name} {user.surname}
+                                                    </span>
+                                                )}
+                                            </td>
+
+
                                             <td className="p-3 border">{user.email}</td>
                                             <td className="p-3 border text-sm font-bold text-indigo-600 uppercase">{user.role}</td>
                                             <td className="p-3 border flex gap-2">

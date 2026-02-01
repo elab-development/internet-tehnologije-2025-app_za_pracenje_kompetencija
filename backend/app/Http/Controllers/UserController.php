@@ -129,4 +129,67 @@ class UserController extends Controller
             'link' => $link
         ]);
     }
+
+    public function adminUserProfile($id)
+    {
+        $auth = auth()->user();
+
+        // prilagodi: kod tebe su role 'admin', 'moderator', 'user'
+        if (!$auth || !in_array($auth->role, ['admin', 'moderator'])) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $user = User::with([
+            'competencies.institution',
+            'competencies.type',
+            'competencies.source',
+            'competencies.verifications',
+        ])->findOrFail($id);
+
+        return response()->json([
+            'id' => $user->id,
+            'name' => $user->name,
+            'surname' => $user->surname,
+            'email' => $user->email,
+            'description' => $user->description,
+            'competencies' => $user->competencies,
+        ]);
+    }
+
+    public function adminUpdateUser(Request $request, $id)
+{
+    $auth = auth()->user();
+
+    // Samo admin/moderator sme
+    if (!$auth || !in_array($auth->role, ['admin', 'moderator'])) {
+        return response()->json(['message' => 'Unauthorized'], 403);
+    }
+
+    $user = User::findOrFail($id);
+
+    $request->validate([
+        'name' => 'sometimes|nullable|string|max:255',
+        'surname' => 'sometimes|nullable|string|max:255',
+        'email' => 'sometimes|nullable|email|unique:users,email,' . $user->id,
+        'description' => 'sometimes|nullable|string',
+        'password' => 'sometimes|nullable|min:6',
+        'role' => 'sometimes|in:user,moderator,admin' // opcionalno, ako želiš da admin menja rolu ovde
+    ]);
+
+    if ($request->has('name')) $user->name = $request->name;
+    if ($request->has('surname')) $user->surname = $request->surname;
+    if ($request->has('email')) $user->email = $request->email;
+    if ($request->has('description')) $user->description = $request->description;
+    if ($request->filled('password')) $user->password = Hash::make($request->password);
+    if ($request->has('role')) $user->role = $request->role;
+
+    $user->save();
+
+    return response()->json([
+        'message' => 'User updated successfully',
+        'user' => $user
+    ]);
+}
+
+
 }

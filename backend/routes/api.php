@@ -80,3 +80,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/competency-types/{id}', [CompetencyTypeController::class, 'update']);
     Route::delete('/competency-types/{id}', [CompetencyTypeController::class, 'destroy']);
 });
+
+Route::middleware('auth:sanctum')->get('/admin/users/{id}/profile', [UserController::class, 'adminUserProfile']);
+Route::middleware('auth:sanctum')->put('/admin/users/{id}', [UserController::class, 'adminUpdateUser']);
