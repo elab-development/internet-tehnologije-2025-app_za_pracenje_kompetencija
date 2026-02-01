@@ -49,7 +49,8 @@ class AuthController extends Controller
             'surname' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6',
-            'role' => 'required|string|in:user,guest'
+            //'role' => 'required|string|in:user,guest'
+            
         ]);
 
         //kreiram korisnika
@@ -58,7 +59,7 @@ class AuthController extends Controller
             'surname' => $request->surname,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $request->role
+            'role' => 'user',
         ]);
 
         //vracam podatke kao JSON

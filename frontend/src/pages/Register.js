@@ -9,7 +9,7 @@ function Register() {
   const [surname, setSurname] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('user');
+  //const [role, setRole] = useState('user');
   const [errors, setErrors] = useState({}); // validacija greške
 
   const handleRegister = async (e) => {
@@ -21,11 +21,12 @@ function Register() {
         name,
         surname,
         email,
-        password,
-        role
+        password
       });
 
       console.log('User created: ', res.data);
+
+      alert('Registration successful! You can now log in.');
 
       navigate('/login'); 
 
@@ -92,7 +93,7 @@ function Register() {
             />
           </div>
 
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <label className="block text-sm font-medium mb-1">Role</label>
             <select
               className="w-full border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-400"
@@ -102,7 +103,7 @@ function Register() {
               <option value="user">User</option>
               <option value="guest">Guest</option>
             </select>
-          </div>
+          </div> */}
 
           <button
             type="submit"

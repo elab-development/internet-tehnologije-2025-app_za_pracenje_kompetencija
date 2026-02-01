@@ -9,6 +9,10 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
+    const handleGuest = () => {
+        navigate('/guest');
+    };
+
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -25,7 +29,7 @@ const Login = () => {
 
             localStorage.setItem('token', res.data.token);
             localStorage.setItem('role', res.data.user.role);
-            localStorage.setItem('user_id', res.data.user.id);          // Da URL ne bude više 'null' 
+            localStorage.setItem('user_id', res.data.user.id);          // Da URL ne bude viï¿½e 'null' 
             localStorage.setItem('user_name', res.data.user.name);      // Da Dashboard zna ime 
             localStorage.setItem('user_surname', res.data.user.surname); // Da Dashboard zna prezime
             localStorage.setItem('user_email', res.data.user.email);    // Da Dashboard zna email 
@@ -73,6 +77,14 @@ const Login = () => {
                         type='submit'
                         className='w-full py-2 bg-red-500 text-white rounded-md'
                     >Login</button>
+                    <button
+                        type="button"
+                        onClick={handleGuest}
+                        className="w-full py-2 border border-red-500 text-red-500 rounded-md hover:bg-red-50 transition"
+                    >
+                        Continue as Guest
+                    </button>
+
 
                     <p className='text-sm text-center'>
                         You don't have an account?{' '}
