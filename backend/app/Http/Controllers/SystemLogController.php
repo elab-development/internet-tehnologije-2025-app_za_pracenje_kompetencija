@@ -30,7 +30,7 @@ class SystemLogController extends Controller
 
     }
 
-    //cuvanje novog loga
+    //sistem automatski cuva nov log
     public function store(Request $request)
     {
         $user = auth('sanctum')->user();

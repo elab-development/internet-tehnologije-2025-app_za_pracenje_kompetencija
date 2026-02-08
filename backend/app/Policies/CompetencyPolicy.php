@@ -21,7 +21,7 @@ class CompetencyPolicy
      */
     public function view(User $user, Competency $competency): bool
     {
-        return $user->id === $competency->user_id;
+        return $user->id === $competency->user_id; //korinsik vidi komp samo ako je njen vlasnik
     }
 
     /**
@@ -37,7 +37,7 @@ class CompetencyPolicy
      */
     public function update(User $user, Competency $competency): bool
     {
-        return $user->id === $competency->user_id;
+        return $user->id === $competency->user_id; //komp moze menjati samo njen vlasnik
     }
 
     /**

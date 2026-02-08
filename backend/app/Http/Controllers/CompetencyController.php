@@ -9,10 +9,12 @@ use App\Models\CompetencySource;
 
 class CompetencyController extends Controller
 {
-    public function index()  //prikaz svih kompetencija trenutnog korisnika
+    //prikaz svih kompetencija trenutnog korisnika
+    public function index()
     {
         return auth()->user()->competencies()->with(['institution', 'type', 'source', 'verifications'])->get(); // samo svoje kompetencije
     }
+
     //Brisanje kompetencije
     public function destroy($id)
     {
@@ -28,34 +30,7 @@ class CompetencyController extends Controller
         return response()->noContent(); // 204
     }
 
-    // Kreiranje nove kompetencije
-//    public function store(Request $request)
-// {
-//     $data = $request->validate([
-//         'name' => 'required|string',
-//         'level' => 'required|integer|min:1|max:5',
-//         'evidence' => 'nullable|string',
-//         'institution_id' => 'required|exists:institutions,id',
-//         'type_id' => 'required|exists:competency_types,id',
-//         'source_id' => 'required|exists:competency_sources,id',
-//     ]);
 
-    //     try {
-//         $user = auth()->user();
-//         $competency = $user->competencies()->create($data);
-//         $competency->verifications()->create([
-//             'user_id' => $user->id,
-//             'status_verification_id' => 1, 
-//             'request' => 'Request for: ' . $competency->name,
-//             'moderator_id' => null, // Ovde stavljamo tvoj ID da baza ne baci grešku
-//             'verified_at' => null, // Odmah stavljamo trenutno vreme
-//         ]);
-
-    //         return response()->json($competency->load('verifications'), 201);
-//     } catch (\Exception $e) {
-//         return response()->json(['error' => $e->getMessage()], 500);
-//     }
-// }
 
     public function store(Request $request)
     {
@@ -72,13 +47,13 @@ class CompetencyController extends Controller
         try {
             $user = auth()->user();
 
-            // 1) Kreiraj kompetenciju
+            // Kreiraj kompetenciju
             $competency = $user->competencies()->create($data);
 
-            // 2) Ako je tip Informal (id=2), auto-approved
+            // Ako je tip Informal (id=2), auto-approved
             $isInformal = ((int) $data['source_id'] === 2);
 
-            // 1 = Waiting, 2 = Approved
+            // 1 = Pending, 2 = Approved
             $statusId = $isInformal ? 2 : 1;
 
             // 3) Kreiraj verifikaciju sa odgovarajućim statusom
@@ -108,29 +83,11 @@ class CompetencyController extends Controller
     // Prikaz jedne kompetencije
     public function show(Competency $competency)
     {
-        $this->authorize('view', $competency);
+        $this->authorize('view', $competency); //koristi Laravel Policy da proveri da li trenutni korisnik sme da vidi kompetenicju
         return $competency->load(['institution', 'type', 'source', 'verifications']);
     }
 
-    //Azuriranje komp
-    // public function update(Request $request, Competency $competency)
-    // {
-    //     $this->authorize('update', $competency);
 
-    //     $data = $request->validate([
-    //         'name' => 'sometimes|string',
-    //         'level' => 'sometimes|integer',
-    //         'acquired_at' => 'nullable|date',
-    //         'evidence' => 'nullable|string',
-    //         'institution_id' => 'sometimes|exists:institutions,id',
-    //         'type_id' => 'sometimes|exists:competency_types,id',
-    //         'source_id' => 'sometimes|exists:competency_sources,id',
-    //     ]);
-
-    //     $competency->update($data);
-
-    //     return response()->json($competency);
-    // }
 
     public function update(Request $request, $id)
     {
@@ -158,9 +115,9 @@ class CompetencyController extends Controller
 
         $competency->update($data);
 
-        // (Opcionalno, ali preporuka)
-        // Ako izmeni pending kompetenciju, možeš da resetuješ verifikaciju na Pending
-        // osim ako je Informal (source_id=2) -> Approved.
+
+        // Ako izmeni pending kompetenciju, može da resetuje verifikaciju na Pending
+        // osim ako je Informal (source_id=2) -> Approved
         $latestVerification = $competency->verifications()->orderByDesc('id')->first();
 
         if ($latestVerification) {
@@ -174,21 +131,15 @@ class CompetencyController extends Controller
             ]);
         }
 
-        // Vrati sve sa relacijama da front dobije sve što treba
+
         return response()->json(
             $competency->fresh()->load(['institution', 'type', 'source', 'verifications'])
         );
     }
 
 
-    //  // Brisanje komp
-    // public function destroy(Competency $competency)
-    // {
-    //     $this->authorize('delete', $competency);
-    //     $competency->delete();
-    //     return response()->noContent();
-    // }
 
+//frontend treba liste institucija, tipova i izvora za dropdown menije
     public function getOptions()
     {
         return response()->json([
@@ -197,6 +148,8 @@ class CompetencyController extends Controller
             'sources' => CompetencySource::all(),
         ]);
     }
+
+    //za sve korisnike vraca komp
     public function allCompetencies()
     {
         return Competency::with(['user', 'institution', 'type', 'source', 'verifications'])->get();

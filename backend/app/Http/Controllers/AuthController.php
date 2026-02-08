@@ -27,14 +27,15 @@ class AuthController extends Controller
 
 
         $token = $user->createToken('auth_token')->plainTextToken;
-        return response()->json([
+        return response()->json([ // ono sto front dobija kao res.data
             'token' => $token,
             'user' => [
                 'id' => $user->id,
                 'name'=> $user->name,
                 'surname'=> $user->surname,
                 'email' => $user->email,
-                'role' => $user->role
+                'role' => $user->role,
+                'description' => $user->description
             ]
         ]);
     }
@@ -43,14 +44,12 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        //validaciju vrsim
+
         $request->validate([
             'name' => 'required|string|max:255',
             'surname' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6',
-            //'role' => 'required|string|in:user,guest'
-            
+            'password' => 'required|string|min:6',            
         ]);
 
         //kreiram korisnika

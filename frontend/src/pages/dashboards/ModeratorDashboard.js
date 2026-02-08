@@ -1,36 +1,36 @@
-﻿import React, { useEffect, useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const ModeratorDashboard = () => {
   const navigate = useNavigate();
-  const [pendingRequests, setPendingRequests] = useState([]);
-  const [view, setView] = useState('default');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [profileData, setProfileData] = useState({
+  const [pendingRequests, setPendingRequests] = useState([]); //zahtevi za verifikaciju
+  const [view, setView] = useState('default'); //defalt,verificatiins,history
+  const [searchTerm, setSearchTerm] = useState(''); //za filter u tabeli
+  const [profileData, setProfileData] = useState({ //podaci za izmenu profila
     name: '',
     surname: '',
     email: '',
     password: '',
     description: ''
   });
-  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
-  const [selectedRequestId, setSelectedRequestId] = useState(null);
+  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false); //da li je reject modal otvoren
+  const [selectedRequestId, setSelectedRequestId] = useState(null); //za koji zahtev radim reject
   const [rejectNote, setRejectNote] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false); // modal aza change profile 
 
   const [historyRequests, setHistoryRequests] = useState([]);
 
 
-  // Fetch pending verifications
+  // ucitaj tabelu POST /verify/{id}
   const fetchPending = async () => {
     try {
       const token = localStorage.getItem('token');
       const res = await axios.get('http://127.0.0.1:8000/api/moderator/pending-verifications', {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setPendingRequests(res.data);
-      setView('verifications');
+      setPendingRequests(res.data); //cuvamo rezultat
+      setView('verifications'); //prikaz ekrana sa tabelom
     } catch (error) {
       console.error("Error fetching requests:", error);
     }
@@ -198,7 +198,7 @@ const ModeratorDashboard = () => {
               <tbody>
                 {pendingRequests
                   .filter(req =>
-                    req.user?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    req.user?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                     req.competency?.name.toLowerCase().includes(searchTerm.toLowerCase())
                   )
                   .map((req) => (

@@ -5,9 +5,9 @@ import axios from 'axios';
 const AdminDashboard = () => {
     const navigate = useNavigate();
     const [users, setUsers] = useState([]);
-    const [view, setView] = useState('default');
-    const [searchTerm, setSearchTerm] = useState('');
-    const [profileData, setProfileData] = useState({
+    const [view, setView] = useState('default');  //default,users,systemData,systemLogs
+    const [searchTerm, setSearchTerm] = useState(''); //pretraga korisnika
+    const [profileData, setProfileData] = useState({ //forma za izmenu profila admina PUT/users/{id}
         name: '',
         surname: '',
         email: '',
@@ -17,17 +17,16 @@ const AdminDashboard = () => {
     const [isInstitutionModalOpen, setIsInstitutionModalOpen] = useState(false);
     const [isCompetencyTypeModalOpen, setIsCompetencyTypeModalOpen] = useState(false);
 
-    const [systemType, setSystemType] = useState('institutions');
 
     const [institutions, setInstitutions] = useState([]);
     const [newInstitution, setNewInstitution] = useState('');
     const [competencyTypes, setCompetencyTypes] = useState([]);
     const [newCompetencyType, setNewCompetencyType] = useState('');
-    const [competencies, setCompetencies] = useState([]);
+    
 
-    const [systemLogs, setSystemLogs] = useState([]);
+    const [systemLogs, setSystemLogs] = useState([]);  //GET/system-logs
 
-    // Definisanje ID-a trenutnog admina iz localStorage-a kako bismo znali koji profil je tvoj 
+    //trenutno ulogovani admin 
     const currentAdminId = localStorage.getItem('user_id');
     const api = axios.create({
         baseURL: 'http://127.0.0.1:8000/api',
@@ -41,6 +40,7 @@ const AdminDashboard = () => {
         return config;
     });
 
+    //prikaz svih korisnika  GET/users
     const fetchUsers = async () => {
         try {
             const response = await api.get('/users');
@@ -55,9 +55,9 @@ const AdminDashboard = () => {
     const deleteUser = async (userId) => {
         if (window.confirm("Are you sure you want to delete this profile?")) {
             try {
-                await api.delete(`/users/${userId}`);
+                await api.delete(`/users/${userId}`); //DELETE /users/{id}
 
-                await logAction({
+                await logAction({   //pamtimo u systemLog
                     action: 'Delete User',
                     entity: 'User',
                     entity_id: userId,
@@ -74,6 +74,7 @@ const AdminDashboard = () => {
         }
     };
 
+    //PATCH /users/{id}/role
     const changeRole = async (userId, newRole) => {
         try {
             //menja rolu korisnika
@@ -87,7 +88,7 @@ const AdminDashboard = () => {
                 description: `Role changed to ${newRole}`,
             });
 
-            //psvezi listu korisnika
+            //prikazi listu korisnika
             const response = await api.get('/users');
             setUsers(response.data);
             alert(`Role was successfully changed to ${newRole}`);
@@ -101,6 +102,7 @@ const AdminDashboard = () => {
         navigate('/login');
     };
 
+    //PUT /users/{id}
     const handleSaveChanges = async () => {
         const userId = localStorage.getItem('user_id');
         const dataToSend = {};
@@ -160,6 +162,7 @@ const AdminDashboard = () => {
     };
 
 
+    //POST /system-logs
     const logAction = async ({ action, entity, entity_id, description }) => {
         try {
             await api.post('/system-logs', {
@@ -457,7 +460,7 @@ const AdminDashboard = () => {
                 </div>
             )}
 
-            {/* Modal za izmenu profila ostaje nepromenjen */}
+            {/* Modal za izmenu profila */}
             {isModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
                     <div className="bg-white p-8 rounded-lg shadow-xl w-full max-w-md animate-fade-in">

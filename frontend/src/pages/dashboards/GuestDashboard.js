@@ -5,11 +5,12 @@ const GuestDashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [link, setLink] = useState("");
+  const [link, setLink] = useState(""); //cuva ono sto korisnik kuca u input
   const [error, setError] = useState("");
 
   const isViewingProfile = location.pathname.startsWith("/guest/u/");
 
+  //iz onoga sto unese izvlaci samo uuid
   const extractUuid = (value) => {
     const v = value.trim();
     if (!v) return null;
@@ -21,7 +22,7 @@ const GuestDashboard = () => {
       return url.pathname.split(marker)[1]?.split("/")[0] || null;
     } catch {
       const marker = "/public-profile/";
-      if (v.includes(marker)) return v.split(marker)[1]?.split("/")[0] || null;
+      if (v.includes(marker)) return v.split(marker)[1]?.split("/")[0] || null; //ako sadrzi publik-profile izvucem uuid a ako ne onda je to uuid
       return v;
     }
   };

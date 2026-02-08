@@ -15,7 +15,7 @@ const UserDashboard = () => {
         description: localStorage.getItem('user_description') || '',
     });
 
-    // Form data za novu kompetenciju
+    //za novu kompetenciju
     const [formData, setFormData] = useState({
         name: '',
         level: 1,
@@ -57,15 +57,15 @@ const UserDashboard = () => {
         navigate('/login');
     };
 
-    // Funkcija za slanje kompetencije na backend
+
+    //dodavanje kompetencije
     const handleAddCompetency = async (e) => {
         e.preventDefault();
 
-        // Proveri šta tačno šalješ. 
-        // Ako si u migraciji obrisao acquired_at, izbaci ga odavde!
+
         const dataToSend = {
             name: formData.name,
-            level: parseInt(formData.level), // Mora biti broj
+            level: parseInt(formData.level),
             institution_id: formData.institution_id,
             type_id: formData.type_id,
             source_id: formData.source_id,
@@ -77,14 +77,15 @@ const UserDashboard = () => {
             const response = await axios.post('http://127.0.0.1:8000/api/competencies', dataToSend, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            // ... uspeh
+
         } catch (error) {
-            // OVO ĆE TI REĆI TAČNO ŠTA NIJE U REDU
+
             console.log("Server response error:", error.response.data);
             alert("Greška: " + JSON.stringify(error.response.data.errors));
         }
     };
 
+    //cuvamo izmenjene podatke profilaa
     const handleSaveChanges = async () => {
         const userId = localStorage.getItem('user_id');
         const dataToSend = {};
@@ -153,7 +154,7 @@ const UserDashboard = () => {
                     <p className="text-gray-600">See all your currently assigned and achieved skills.</p>
                 </div>
 
-                {/* KARTICA ZA DODAVANJE - Sada otvara modal */}
+                {/* kartica za dodavanje - Sada otvara modal */}
                 <div onClick={() => setIsCompModalOpen(true)} className="bg-white p-6 rounded-lg shadow-md border-l-4 border-green-500 cursor-pointer hover:bg-green-50 transition">
                     <h3 className="font-bold text-lg text-green-700 underline">Add competency</h3>
                     <p className="text-gray-600">Request a new competency to be added to your profile.</p>
@@ -164,10 +165,10 @@ const UserDashboard = () => {
                     <p className="text-gray-600">Generate a secure link to share your profile.</p>
                 </div>
 
-                
+
             </div>
 
-            {/* MODAL ZA DODAVANJE KOMPETENCIJE */}
+            {/* modal za dodavanje kompetencije */}
             {isCompModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
                     <div className="bg-white p-8 rounded-lg shadow-xl w-full max-w-lg overflow-y-auto max-h-[90vh]">
@@ -225,7 +226,7 @@ const UserDashboard = () => {
                 </div>
             )}
 
-            {/* MODAL ZA PROFIL - Tvoj postojeći modal */}
+            {/* modal za izmenu profila */}
             {isProfileModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
                     <div className="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
@@ -264,7 +265,7 @@ const UserDashboard = () => {
             )}
 
             <div className="mt-8">
-                <Outlet />
+                <Outlet />  {/* za child rute*/}
             </div>
         </div>
     );

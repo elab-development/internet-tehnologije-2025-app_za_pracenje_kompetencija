@@ -17,8 +17,7 @@ class VerificationController extends Controller
             $user = auth()->user();
             if ($user->role === 'moderator') {
                 // Učitavamo sve što je na čekanju (status 1)
-                // BITNO: Proveri da li se tvoja relacija u modelu Competency zove 'user'
-                return Verification::with(['competency', 'user', 'status'])
+                 return Verification::with(['competency', 'user', 'status'])
                     ->where('status_verification_id', 1)
                     ->get();
             }
@@ -29,7 +28,7 @@ class VerificationController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Server Error',
-                'message' => $e->getMessage() // Ovo će nam reći tačnu grešku u konzoli
+                'message' => $e->getMessage() // ya tačnu grešku u konzoli
             ], 500);
         }
     }
@@ -65,7 +64,7 @@ class VerificationController extends Controller
         if ($user->role === 'moderator' || $verification->competency->user_id === $user->id) {
             return $verification->load(['competency', 'moderator', 'status']);
         }
-        return response()->json(['message' => 'Unauthorized', 403]);
+        return response()->json(['message' => 'Unauthorized'], 403);
     }
 
 
@@ -93,9 +92,9 @@ class VerificationController extends Controller
         $verification->update([
             'status_verification_id' => 2,           // Approved
             'moderator_id' => $user->id,
-            'user_id' => $verification->competency->user_id, // +++
+            'user_id' => $verification->competency->user_id, // njen vlasnik je
             'verified_at' => now()->toDateString(),  // pošto je kolona DATE
-            'note' => $request->note ?? 'Approved.',
+            'note' => $request->note ?? 'Approved.', //ako ne posalje note automatski se pise
             'competency_id' => $verification->competency_id, //+++
         ]);
 
@@ -159,14 +158,15 @@ class VerificationController extends Controller
             'status'
         ])
             ->where('moderator_id', $user->id)
-            ->whereIn('status_verification_id', [2, 3])
+            ->whereIn('status_verification_id', [2, 3])  //aproved reject
             ->orderBy('verified_at', 'desc')
             ->get();
     }
 
+    //pregled svih verifikacija u sistemu za admina
     public function systemOverview()
     {
-        $verifications = Verification::with(['user', 'competency', 'statusVerification'])->get();
+        $verifications = Verification::with(['user', 'competency', 'status'])->get();
         return response()->json($verifications);
     }
 

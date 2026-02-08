@@ -13,7 +13,7 @@ use App\Http\Controllers\SystemLogController;
 use App\Http\Controllers\CompetencyTypeController;
 
 
-Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::get('/users', function () {
@@ -27,7 +27,7 @@ Route::patch('/users/{id}/role', function (Request $request, $id) {
     $user->save();
     return response()->json(['message' => 'Rola uspešno promenjena', 'user' => $user]); //  <- izbacuje onu poruku gore :)
 }); // ruta za promenu rola korisnika
-Route::put('/users/{id}', [UserController::class, 'update']); // update profila
+Route::middleware('auth:sanctum')->put('/users/{id}', [UserController::class, 'update']);// update profila
 Route::get('/competency-options', [CompetencyController::class, 'getOptions']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('competencies', CompetencyController::class);
