@@ -1,0 +1,39 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: kompetencije_db
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes" # Dozvoli praznu lozinku
+      MYSQL_DATABASE: kompetencije_db
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  backend:
+    build: ./backend
+    container_name: backend_app
+    volumes:
+      - ./backend:/var/www
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_DATABASE: kompetencije_db
+      DB_USERNAME: root
+      DB_PASSWORD: ""
+    ports:
+      - "8000:8000"
+    entrypoint: ["sh", "/var/www/wait-for-db.sh"]
+
+  frontend:
+    build: ./frontend
+    container_name: frontend_app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  db_data:

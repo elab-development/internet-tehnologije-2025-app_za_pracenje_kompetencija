@@ -5,6 +5,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class StatusVerification extends Model{
     protected $fillable = [
+
+        'name',
         'description', //opis npr "Na čekanju", "Odobreno", "Odbijeno" 
     ];
 

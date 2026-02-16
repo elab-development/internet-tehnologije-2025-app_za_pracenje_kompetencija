@@ -15,12 +15,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'surname' => 'Test User',
-            'email' => 'test@example.com',
+        // Pozivamo InitialSeeder koji sadrži sve podatke
+        $this->call([
+            InitialSeeder::class,
         ]);
     }
 }
