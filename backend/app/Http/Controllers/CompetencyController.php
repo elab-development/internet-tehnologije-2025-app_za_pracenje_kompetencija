@@ -9,6 +9,17 @@ use App\Models\CompetencySource;
 
 class CompetencyController extends Controller
 {
+    /**
+     * @OA\Get(
+     * path="/api/competencies",
+     * summary="Prikaz svih kompetencija",
+     * tags={"Competencies"},
+     * @OA\Response(
+     * response=200,
+     * description="Uspešno vraćena lista kompetencija"
+     * )
+     * )
+     */
     //prikaz svih kompetencija trenutnog korisnika
     public function index()
     {
@@ -31,7 +42,28 @@ class CompetencyController extends Controller
     }
 
 
-
+    /**
+     * @OA\Post(
+     * path="/api/competencies",
+     * summary="Dodavanje nove kompetencije",
+     * tags={"Competencies"},
+     * @OA\RequestBody(
+     * required=true,
+     * @OA\JsonContent(
+     * required={"name","level","institution_id","type_id","source_id"},
+     * @OA\Property(property="name", type="string", example="Java Programming"),
+     * @OA\Property(property="level", type="integer", example=3),
+     * @OA\Property(property="institution_id", type="integer", example=1),
+     * @OA\Property(property="type_id", type="integer", example=1),
+     * @OA\Property(property="source_id", type="integer", example=1)
+     * )
+     * ),
+     * @OA\Response(
+     * response=201,
+     * description="Kompetencija uspešno kreirana"
+     * )
+     * )
+     */
     public function store(Request $request)
     {
         $data = $request->validate([
