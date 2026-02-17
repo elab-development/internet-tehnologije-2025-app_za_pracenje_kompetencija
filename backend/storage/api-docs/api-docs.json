@@ -1,0 +1,1074 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API za praćenje kompetencija",
+        "description": "Dokumentacija obuhvata rute za upravljanje kompetencijama, verifikacijama i autentifikaciju korisnika.",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000",
+            "description": "Lokalni server"
+        }
+    ],
+    "paths": {
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Prijava korisnika",
+                "operationId": "a3b306d14572d1f4bd6c064b3233e7b8",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "admin@gmail.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Uspešna prijava"
+                    },
+                    "401": {
+                        "description": "Pogrešni podaci"
+                    }
+                }
+            }
+        },
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Registracija novog korisnika",
+                "operationId": "8a56853624e025573120a09a4c75d468",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Pera"
+                                    },
+                                    "surname": {
+                                        "type": "string",
+                                        "example": "Peric"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "pera@gmail.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Uspešna registracija"
+                    },
+                    "422": {
+                        "description": "Greška u validaciji"
+                    }
+                }
+            }
+        },
+        "/api/competencies": {
+            "get": {
+                "tags": [
+                    "Competencies"
+                ],
+                "summary": "Lista kompetencija",
+                "operationId": "7c93d80f4e15346f0b90cdde5eaaca4f",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "401": {
+                        "description": "Niste ulogovani"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Competencies"
+                ],
+                "summary": "Kreiranje nove kompetencije",
+                "operationId": "467f5c3b6b8ac15f7f0dde9f70c269c7",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "PHP Laravel"
+                                    },
+                                    "level": {
+                                        "type": "integer",
+                                        "example": 4
+                                    },
+                                    "institution_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "type_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "source_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Kompetencija uspešno kreirana"
+                    },
+                    "422": {
+                        "description": "Validaciona greška"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/competencies/{id}": {
+            "get": {
+                "tags": [
+                    "Competencies"
+                ],
+                "summary": "Prikaz jedne kompetencije",
+                "operationId": "6f8b20052328dd0450ced05def6aefa7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalji kompetencije"
+                    },
+                    "404": {
+                        "description": "Nije pronađeno"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Competencies"
+                ],
+                "summary": "Izmena postojeće kompetencije",
+                "operationId": "039106f7c3ba694f5919b6eb858f8953",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Napredni PHP"
+                                    },
+                                    "level": {
+                                        "type": "integer",
+                                        "example": 5
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Uspešno izmenjeno"
+                    },
+                    "404": {
+                        "description": "Nije pronađeno"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Competencies"
+                ],
+                "summary": "Brisanje kompetencije",
+                "operationId": "3b78929960bab6ffa500371d00c2d0e5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Uspešno obrisano"
+                    },
+                    "404": {
+                        "description": "Nije pronađeno"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/competencies/options": {
+            "get": {
+                "tags": [
+                    "Competencies"
+                ],
+                "summary": "Liste za dropdown (institucije, tipovi, izvori)",
+                "operationId": "c520ea7943df1a5decd006adef72f31f",
+                "responses": {
+                    "200": {
+                        "description": "JSON sa nizovima opcija"
+                    }
+                }
+            }
+        },
+        "/api/admin/all-competencies": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Pregled svih kompetencija u sistemu (Admin)",
+                "operationId": "b9464ce3e06d798dca77222815914072",
+                "responses": {
+                    "200": {
+                        "description": "Lista svih kompetencija sa podacima o korisnicima"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/competency-types": {
+            "get": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Lista svih tipova kompetencija",
+                "operationId": "9cc3e09eebc6051536b0ca7f9dd0a651",
+                "responses": {
+                    "200": {
+                        "description": "Uspešno dobavljena lista"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Dodaj novi tip kompetencije",
+                "operationId": "130bff303780e42c35e7a1f37ad389ee",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Programiranje"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Uspešno kreirano"
+                    },
+                    "422": {
+                        "description": "Greška u validaciji"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/competency-types/{id}": {
+            "put": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Ažuriraj tip kompetencije",
+                "operationId": "775c83305dc6adc7491ca26f38f8a295",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Dizajn"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Uspešno ažurirano"
+                    },
+                    "404": {
+                        "description": "Tip nije pronađen"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Obriši tip kompetencije",
+                "operationId": "5c72dca40d302b8a0b2800534e70f21d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Uspešno obrisano"
+                    },
+                    "404": {
+                        "description": "Tip nije pronađen"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/institutions": {
+            "get": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Lista svih institucija",
+                "operationId": "32ef01ce0a6e2578738f42463f66c478",
+                "responses": {
+                    "200": {
+                        "description": "Uspešno dobavljena lista"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Dodaj novu instituciju",
+                "operationId": "e28467aab770e2d18c848aa01045d4a0",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Univerzitet u Beogradu"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Institucija uspešno kreirana"
+                    },
+                    "422": {
+                        "description": "Greška u validaciji"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/institutions/{id}": {
+            "put": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Ažuriraj podatke o instituciji",
+                "operationId": "98e02a95fe073abbbe97909a8051ce25",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Novi Sad IT Akademija"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Uspešno ažurirano"
+                    },
+                    "404": {
+                        "description": "Institucija nije pronađena"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Obriši instituciju",
+                "operationId": "cd99565e970d793f5a5991ac151fbaa4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Uspešno obrisano"
+                    },
+                    "404": {
+                        "description": "Institucija nije pronađena"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/system-logs": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Pregled svih sistemskih logova (Samo Admin)",
+                "operationId": "08a1343330dcd6b9c843a5d6d7ac82c0",
+                "responses": {
+                    "200": {
+                        "description": "Lista svih akcija u sistemu sa podacima o korisnicima"
+                    },
+                    "403": {
+                        "description": "Zabranjen pristup - niste admin"
+                    },
+                    "401": {
+                        "description": "Neautorizovan pristup"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Ručno kreiranje log zapisa",
+                "operationId": "2e5ed08f9ad79034c809b82a8ea72f38",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "action": {
+                                        "type": "string",
+                                        "example": "Manual Audit"
+                                    },
+                                    "entity": {
+                                        "type": "string",
+                                        "example": "User Management"
+                                    },
+                                    "entity_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Provera statusa korisnika"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Log uspešno kreiran"
+                    },
+                    "401": {
+                        "description": "Neautorizovan pristup"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/users/{id}": {
+            "put": {
+                "tags": [
+                    "User Profile"
+                ],
+                "summary": "Ažuriranje sopstvenog profila",
+                "operationId": "b9091397c8b25f12c6adb74be6ce3a5a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Pera"
+                                    },
+                                    "surname": {
+                                        "type": "string",
+                                        "example": "Peric"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "pera.izmenjen@gmail.com"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Novi opis profila"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "novaLozinka123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Profil uspešno ažuriran"
+                    },
+                    "403": {
+                        "description": "Možete menjati samo svoj profil"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "User Profile"
+                ],
+                "summary": "Trajno brisanje korisničkog naloga",
+                "operationId": "fa56cffde745d3f152f95cbacd936c0b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Nalog obrisan"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/public-profile/{token}": {
+            "get": {
+                "tags": [
+                    "Public"
+                ],
+                "summary": "Pregled javnog profila (bez logovanja)",
+                "operationId": "1dc1b77d4359efda0fec6eacb4af89ab",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Uspešan prikaz javnih podataka"
+                    },
+                    "404": {
+                        "description": "Profil nije pronađen"
+                    }
+                }
+            }
+        },
+        "/api/users/generate-share-link/{id}": {
+            "post": {
+                "tags": [
+                    "User Profile"
+                ],
+                "summary": "Generiši UUID link za deljenje profila",
+                "operationId": "9581979c586f1777efecff526786cd69",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Link generisan"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/users/{id}": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Detaljan profil korisnika za Admina/Moderatora",
+                "operationId": "e2be8e9382aaf97edefc468ed6d4733e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Svi podaci o korisniku uključujući sve kompetencije"
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Admin ažuriranje bilo kog korisnika",
+                "operationId": "97afbcd975ccb1784cdd676dd7398102",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "role": {
+                                        "type": "string",
+                                        "example": "moderator"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Korisnik uspešno ažuriran od strane admina"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/moderator/pending-verifications": {
+            "get": {
+                "tags": [
+                    "Moderator"
+                ],
+                "summary": "Lista zahteva na čekanju (samo za moderatore)",
+                "operationId": "ada41032c7c1792325595e26f433e5a3",
+                "responses": {
+                    "200": {
+                        "description": "Uspešno dobavljena lista"
+                    },
+                    "403": {
+                        "description": "Zabranjen pristup - niste moderator"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/moderator/verifications/{id}": {
+            "get": {
+                "tags": [
+                    "Moderator"
+                ],
+                "summary": "Prikaz jedne specifične verifikacije",
+                "operationId": "bbe9c2087b740509008577e07dc0f899",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalji verifikacije"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/moderator/verify/{id}": {
+            "post": {
+                "tags": [
+                    "Moderator"
+                ],
+                "summary": "Odobravanje kompetencije",
+                "operationId": "c9f476607326e359ecde80fca96b6c45",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Kompetencija uspešno odobrena"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/moderator/reject/{id}": {
+            "post": {
+                "tags": [
+                    "Moderator"
+                ],
+                "summary": "Odbijanje kompetencije",
+                "operationId": "b61542cd92fe8d6344ff06bb71b1a8d4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "note": {
+                                        "type": "string",
+                                        "example": "Nedovoljno dokaza."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Kompetencija odbijena"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/moderator/history": {
+            "get": {
+                "tags": [
+                    "Moderator"
+                ],
+                "summary": "Istorija obrađenih zahteva moderatora",
+                "operationId": "d5b9453bf6a51f2fd9ed401c2ddc578b",
+                "responses": {
+                    "200": {
+                        "description": "Lista odobrenih i odbijenih zahteva"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/verifications-overview": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Pregled svih verifikacija (Admin)",
+                "operationId": "92f7cecf07244f11198bc63c72253286",
+                "responses": {
+                    "200": {
+                        "description": "Kompletna lista svih statusa"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "headers": {
+            "Accept": {
+                "schema": {
+                    "type": "string",
+                    "default": "application/json"
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "name": "Authorization",
+                "in": "header",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Auth"
+        },
+        {
+            "name": "Competencies",
+            "description": "Competencies"
+        },
+        {
+            "name": "Admin",
+            "description": "Admin"
+        },
+        {
+            "name": "Settings",
+            "description": "Settings"
+        },
+        {
+            "name": "User Profile",
+            "description": "User Profile"
+        },
+        {
+            "name": "Public",
+            "description": "Public"
+        },
+        {
+            "name": "Moderator",
+            "description": "Moderator"
+        }
+    ]
+}

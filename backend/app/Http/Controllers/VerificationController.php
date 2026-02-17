@@ -6,18 +6,28 @@ use Illuminate\Http\Request;
 use App\Models\Verification;
 use App\Models\Competency;
 use Illuminate\Support\Facades\Auth;
+use OpenApi\Attributes as OA;
 
 
 class VerificationController extends Controller
 {
-    // Prikaz svih verifikacija za moderatora
+    #[OA\Get(
+        path: '/api/moderator/pending-verifications',
+        summary: 'Lista zahteva na čekanju (samo za moderatore)',
+        security: [['bearerAuth' => []]],
+        tags: ['Moderator'],
+        responses: [
+            new OA\Response(response: 200, description: 'Uspešno dobavljena lista'),
+            new OA\Response(response: 403, description: 'Zabranjen pristup - niste moderator')
+        ]
+    )]
     public function index()
     {
         try {
             $user = auth()->user();
             if ($user->role === 'moderator') {
                 // Učitavamo sve što je na čekanju (status 1)
-                 return Verification::with(['competency', 'user', 'status'])
+                return Verification::with(['competency', 'user', 'status'])
                     ->where('status_verification_id', 1)
                     ->get();
             }
@@ -58,6 +68,18 @@ class VerificationController extends Controller
     }
 
     //prikaz jedne ver
+    #[OA\Get(
+        path: '/api/moderator/verifications/{id}',
+        summary: 'Prikaz jedne specifične verifikacije',
+        security: [['bearerAuth' => []]],
+        tags: ['Moderator'],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Detalji verifikacije')
+        ]
+    )]
     public function show(Verification $verification)
     {
         $user = Auth::user();
@@ -74,8 +96,19 @@ class VerificationController extends Controller
 
     }
 
-    //verifikovanje komp. od strane moderatora
-    public function verify(Request $request, $id)
+    #[OA\Post(
+        path: '/api/moderator/verify/{id}',
+        summary: 'Odobravanje kompetencije',
+        security: [['bearerAuth' => []]],
+        tags: ['Moderator'],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Kompetencija uspešno odobrena')
+        ]
+    )]
+    public function verify($id)
     {
         $user = Auth::user();
         if ($user->role !== 'moderator') {
@@ -115,6 +148,25 @@ class VerificationController extends Controller
         ]);
     }
 
+    #[OA\Post(
+        path: '/api/moderator/reject/{id}',
+        summary: 'Odbijanje kompetencije',
+        security: [['bearerAuth' => []]],
+        tags: ['Moderator'],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))
+        ],
+        requestBody: new OA\RequestBody(
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'note', type: 'string', example: 'Nedovoljno dokaza.')
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 200, description: 'Kompetencija odbijena')
+        ]
+    )]
     public function reject(Request $request, $id)
     {
         $user = auth()->user();
@@ -144,6 +196,15 @@ class VerificationController extends Controller
         return response()->json(['message' => 'Competency rejected.']);
     }
 
+    #[OA\Get(
+        path: '/api/moderator/history',
+        summary: 'Istorija obrađenih zahteva moderatora',
+        security: [['bearerAuth' => []]],
+        tags: ['Moderator'],
+        responses: [
+            new OA\Response(response: 200, description: 'Lista odobrenih i odbijenih zahteva')
+        ]
+    )]
     public function history()
     {
         $user = auth()->user();
@@ -164,6 +225,15 @@ class VerificationController extends Controller
     }
 
     //pregled svih verifikacija u sistemu za admina
+    #[OA\Get(
+        path: '/api/admin/verifications-overview',
+        summary: 'Pregled svih verifikacija (Admin)',
+        security: [['bearerAuth' => []]],
+        tags: ['Admin'],
+        responses: [
+            new OA\Response(response: 200, description: 'Kompletna lista svih statusa')
+        ]
+    )]
     public function systemOverview()
     {
         $verifications = Verification::with(['user', 'competency', 'status'])->get();

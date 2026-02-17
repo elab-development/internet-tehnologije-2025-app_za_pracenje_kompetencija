@@ -6,10 +6,35 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use OpenApi\Attributes as OA;
 
 class UserController extends Controller
 {
 
+    #[OA\Put(
+        path: '/api/users/{id}',
+        summary: 'Ažuriranje sopstvenog profila',
+        security: [['bearerAuth' => []]],
+        tags: ['User Profile'],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))
+        ],
+        requestBody: new OA\RequestBody(
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'name', type: 'string', example: 'Pera'),
+                    new OA\Property(property: 'surname', type: 'string', example: 'Peric'),
+                    new OA\Property(property: 'email', type: 'string', example: 'pera.izmenjen@gmail.com'),
+                    new OA\Property(property: 'description', type: 'string', example: 'Novi opis profila'),
+                    new OA\Property(property: 'password', type: 'string', example: 'novaLozinka123')
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 200, description: 'Profil uspešno ažuriran'),
+            new OA\Response(response: 403, description: 'Možete menjati samo svoj profil')
+        ]
+    )]
     public function update(Request $request, $id) //req-podaci frontenda, id tog usera
     {
         if (auth()->id() !== (int) $id) {
@@ -55,7 +80,18 @@ class UserController extends Controller
         ], 200); //front moze da osvezi prikaz
     }
 
-    //brisanje naloga
+    #[OA\Delete(
+        path: '/api/users/{id}',
+        summary: 'Trajno brisanje korisničkog naloga',
+        security: [['bearerAuth' => []]],
+        tags: ['User Profile'],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Nalog obrisan')
+        ]
+    )]
     public function destroy($id)
     {
         $user = User::findOrFail($id);
@@ -67,6 +103,18 @@ class UserController extends Controller
     }
 
 
+    #[OA\Get(
+        path: '/api/public-profile/{token}',
+        summary: 'Pregled javnog profila (bez logovanja)',
+        tags: ['Public'],
+        parameters: [
+            new OA\Parameter(name: 'token', in: 'path', required: true, schema: new OA\Schema(type: 'string'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Uspešan prikaz javnih podataka'),
+            new OA\Response(response: 404, description: 'Profil nije pronađen')
+        ]
+    )]
     public function publicProfileByToken($token)
     {
         $user = User::where('share_token', $token)->first();
@@ -102,6 +150,18 @@ class UserController extends Controller
     }
 
 
+    #[OA\Post(
+        path: '/api/users/generate-share-link/{id}',
+        summary: 'Generiši UUID link za deljenje profila',
+        security: [['bearerAuth' => []]],
+        tags: ['User Profile'],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Link generisan')
+        ]
+    )]
     public function generateShareLink($id)
     {
         $user = User::findOrFail($id);
@@ -121,6 +181,19 @@ class UserController extends Controller
     }
 
     //admin i moderator mogu videti tudj profil sa svim kompetenicjama
+    #[OA\Get(
+        path: '/api/admin/users/{id}',
+        summary: 'Detaljan profil korisnika za Admina/Moderatora',
+        security: [['bearerAuth' => []]],
+        tags: ['Admin'],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Svi podaci o korisniku uključujući sve kompetencije'),
+            new OA\Response(response: 403, description: 'Unauthorized')
+        ]
+    )]
     public function adminUserProfile($id)
     {
         $auth = auth()->user();
@@ -148,6 +221,25 @@ class UserController extends Controller
     }
 
     //admin i moderator  mogu menjati podatke usera
+    #[OA\Put(
+        path: '/api/admin/users/{id}',
+        summary: 'Admin ažuriranje bilo kog korisnika',
+        security: [['bearerAuth' => []]],
+        tags: ['Admin'],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))
+        ],
+        requestBody: new OA\RequestBody(
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'role', type: 'string', example: 'moderator')
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 200, description: 'Korisnik uspešno ažuriran od strane admina')
+        ]
+    )]
     public function adminUpdateUser(Request $request, $id)
     {
         $auth = auth()->user();
