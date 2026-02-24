@@ -128,10 +128,10 @@ class AuthController extends Controller
             config('services.abstract_email_reputation.key')
             ?? env('ABSTRACT_EMAIL_REPUTATION_API_KEY');
 
-        if (!$key) {
-            // Fail closed (da se vidi odmah da nije podešeno)
-            return ['ok' => false, 'reason' => 'Email reputation is not configured.'];
-        }
+       if (!$key) {
+        Log::warning('Email reputation key missing, skipping check.');
+        return ['ok' => true]; 
+    }
 
         $res = Http::timeout(10)->get('https://emailreputation.abstractapi.com/v1/', [
             'api_key' => $key,

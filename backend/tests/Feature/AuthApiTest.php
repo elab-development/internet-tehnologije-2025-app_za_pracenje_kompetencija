@@ -19,6 +19,7 @@ class AuthApiTest extends TestCase
             'password_confirmation' => 'password123',
         ]);
 
+        $response->dump();
         $response->assertStatus(201)
                  ->assertJsonStructure(['id', 'name', 'surname', 'email', 'role']);
     }
