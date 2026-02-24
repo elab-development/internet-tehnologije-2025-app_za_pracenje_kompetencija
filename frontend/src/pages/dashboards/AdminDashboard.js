@@ -22,7 +22,7 @@ const AdminDashboard = () => {
     const [newInstitution, setNewInstitution] = useState('');
     const [competencyTypes, setCompetencyTypes] = useState([]);
     const [newCompetencyType, setNewCompetencyType] = useState('');
-    
+
 
     const [systemLogs, setSystemLogs] = useState([]);  //GET/system-logs
 
@@ -347,6 +347,14 @@ const AdminDashboard = () => {
                         <p className="text-gray-600">
                             View moderator actions and system events.
                         </p>
+                    </div>
+
+                    <div
+                        onClick={() => navigate('/admin/statistics')}
+                        className="bg-white p-6 rounded-lg shadow-md border-l-4 border-purple-500 cursor-pointer hover:bg-purple-50 transition"
+                    >
+                        <h3 className="font-bold text-lg text-purple-700 underline">Statistics</h3>
+                        <p className="text-gray-600">View admin analytics and summary stats.</p>
                     </div>
 
 

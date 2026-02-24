@@ -9,7 +9,7 @@ import Competencies from './pages/Competencies';
 import PublicProfile from './pages/PublicProfile';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import AdminUserProfile from './pages/AdminUserProfile';
-
+import AdminStatistics from './pages/dashboards/AdminStatistics';
 
 
 function App() {
@@ -34,7 +34,7 @@ function App() {
           <Route path="competencies" element={<Competencies />} />
         </Route>
 
-
+        <Route path="/admin/statistics" element={<AdminStatistics />} />
 
 
         {/* za one koji otvore link za deljenje profila */}

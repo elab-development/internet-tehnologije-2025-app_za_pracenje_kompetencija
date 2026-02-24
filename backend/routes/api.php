@@ -11,6 +11,9 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\InstitutionController;
 use App\Http\Controllers\SystemLogController;
 use App\Http\Controllers\CompetencyTypeController;
+use App\Http\Controllers\AdminStatisticsController;
+
+
 
 
 
@@ -83,3 +86,20 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::middleware('auth:sanctum')->get('/admin/users/{id}/profile', [UserController::class, 'adminUserProfile']);
 Route::middleware('auth:sanctum')->put('/admin/users/{id}', [UserController::class, 'adminUpdateUser']);
+
+
+
+Route::middleware('auth:sanctum')->get(
+    '/admin/statistics',
+    [AdminStatisticsController::class, 'competencyStatus']
+);
+
+Route::middleware('auth:sanctum')->get(
+    '/admin/statistics/top-competency-types',
+    [AdminStatisticsController::class, 'topCompetencyTypes']
+);
+
+Route::middleware('auth:sanctum')->get(
+    '/admin/statistics/competency-sources',
+    [AdminStatisticsController::class, 'competencySources']
+);
