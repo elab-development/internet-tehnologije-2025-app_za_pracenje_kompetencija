@@ -183,19 +183,25 @@ const drawTreemap = (el, items) => {
     chartArea: { width: "95%", height: "85%" },
 
     // ✅ This forces tooltip to include the numbers
-    generateTooltip: (row, size, value) => {
-      // row 0 is the root ("Sources")
-      if (row === 0) return "";
+    // generateTooltip: (row, size, value) => {
+    //   // row 0 is the root ("Sources")
+    //   if (row === 0) return "";
 
+    //   const name = data.getValue(row, 0);
+    //   const total = data.getValue(row, 2);
+
+    //   return `
+    //     <div style="padding:10px 12px;">
+    //       <div style="font-weight:700; margin-bottom:6px;">${name}</div>
+    //       <div>Total competencies: <b>${total}</b></div>
+    //     </div>
+    //   `;
+    // },
+    generateTooltip: (row, size, value) => {
+      if (row === 0) return "";
       const name = data.getValue(row, 0);
       const total = data.getValue(row, 2);
-
-      return `
-        <div style="padding:10px 12px;">
-          <div style="font-weight:700; margin-bottom:6px;">${name}</div>
-          <div>Total competencies: <b>${total}</b></div>
-        </div>
-      `;
+      return `Source: ${name}\nTotal competencies: ${total}`;
     },
   };
 
