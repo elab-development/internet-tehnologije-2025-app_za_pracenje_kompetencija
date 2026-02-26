@@ -197,7 +197,7 @@ class VerificationController extends Controller
     }
 
     #[OA\Get(
-        path: '/api/moderator/history',
+        path: '/api/moderator/verification-history',
         summary: 'Istorija obrađenih zahteva moderatora',
         security: [['bearerAuth' => []]],
         tags: ['Moderator'],
@@ -236,6 +236,10 @@ class VerificationController extends Controller
     )]
     public function systemOverview()
     {
+        $user = auth()->user();
+        if (!$user || $user->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized. Admin only.'], 403);
+        }
         $verifications = Verification::with(['user', 'competency', 'status'])->get();
         return response()->json($verifications);
     }

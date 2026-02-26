@@ -108,7 +108,12 @@ class UserController extends Controller
         summary: 'Pregled javnog profila (bez logovanja)',
         tags: ['Public'],
         parameters: [
-            new OA\Parameter(name: 'token', in: 'path', required: true, schema: new OA\Schema(type: 'string'))
+            new OA\Parameter(
+                name: 'token', 
+                in: 'path', 
+                required: true, 
+                schema: new OA\Schema(type: 'string', example: '550e8400-e29b-41d4-a716-446655440000')
+            )
         ],
         responses: [
             new OA\Response(response: 200, description: 'Uspešan prikaz javnih podataka'),
@@ -182,7 +187,7 @@ class UserController extends Controller
 
     //admin i moderator mogu videti tudj profil sa svim kompetenicjama
     #[OA\Get(
-        path: '/api/admin/users/{id}',
+        path: '/api/admin/users/{id}/profile',
         summary: 'Detaljan profil korisnika za Admina/Moderatora',
         security: [['bearerAuth' => []]],
         tags: ['Admin'],

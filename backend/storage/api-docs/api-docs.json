@@ -166,46 +166,16 @@
                 ]
             }
         },
-        "/api/competencies/{id}": {
-            "get": {
-                "tags": [
-                    "Competencies"
-                ],
-                "summary": "Prikaz jedne kompetencije",
-                "operationId": "6f8b20052328dd0450ced05def6aefa7",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Detalji kompetencije"
-                    },
-                    "404": {
-                        "description": "Nije pronađeno"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
+        "/api/competencies/{competency}": {
             "put": {
                 "tags": [
                     "Competencies"
                 ],
                 "summary": "Izmena postojeće kompetencije",
-                "operationId": "039106f7c3ba694f5919b6eb858f8953",
+                "operationId": "feedb20d1980a79874ef3c155806ff00",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "competency",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -251,10 +221,10 @@
                     "Competencies"
                 ],
                 "summary": "Brisanje kompetencije",
-                "operationId": "3b78929960bab6ffa500371d00c2d0e5",
+                "operationId": "8d2326f6ce71977d2b2b846692bd2062",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "competency",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -277,27 +247,13 @@
                 ]
             }
         },
-        "/api/competencies/options": {
-            "get": {
-                "tags": [
-                    "Competencies"
-                ],
-                "summary": "Liste za dropdown (institucije, tipovi, izvori)",
-                "operationId": "c520ea7943df1a5decd006adef72f31f",
-                "responses": {
-                    "200": {
-                        "description": "JSON sa nizovima opcija"
-                    }
-                }
-            }
-        },
-        "/api/admin/all-competencies": {
+        "/api/all-competencies": {
             "get": {
                 "tags": [
                     "Admin"
                 ],
                 "summary": "Pregled svih kompetencija u sistemu (Admin)",
-                "operationId": "b9464ce3e06d798dca77222815914072",
+                "operationId": "deb9d0d67e10913e9b8db64fea1666cf",
                 "responses": {
                     "200": {
                         "description": "Lista svih kompetencija sa podacima o korisnicima"
@@ -742,7 +698,8 @@
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "example": "550e8400-e29b-41d4-a716-446655440000"
                         }
                     }
                 ],
@@ -785,13 +742,13 @@
                 ]
             }
         },
-        "/api/admin/users/{id}": {
+        "/api/admin/users/{id}/profile": {
             "get": {
                 "tags": [
                     "Admin"
                 ],
                 "summary": "Detaljan profil korisnika za Admina/Moderatora",
-                "operationId": "e2be8e9382aaf97edefc468ed6d4733e",
+                "operationId": "f4989d895a9d584f6b88929206797b9b",
                 "parameters": [
                     {
                         "name": "id",
@@ -815,7 +772,9 @@
                         "bearerAuth": []
                     }
                 ]
-            },
+            }
+        },
+        "/api/admin/users/{id}": {
             "put": {
                 "tags": [
                     "Admin"
@@ -983,13 +942,13 @@
                 ]
             }
         },
-        "/api/moderator/history": {
+        "/api/moderator/verification-history": {
             "get": {
                 "tags": [
                     "Moderator"
                 ],
                 "summary": "Istorija obrađenih zahteva moderatora",
-                "operationId": "d5b9453bf6a51f2fd9ed401c2ddc578b",
+                "operationId": "8d43a0b93b05c6269725badd23c5c4c9",
                 "responses": {
                     "200": {
                         "description": "Lista odobrenih i odbijenih zahteva"

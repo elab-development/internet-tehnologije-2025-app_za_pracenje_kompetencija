@@ -37,12 +37,12 @@ class CompetencyController extends Controller
     }
 
     #[OA\Delete(
-        path: '/api/competencies/{id}',
+        path: '/api/competencies/{competency}',
         summary: 'Brisanje kompetencije',
         security: [['bearerAuth' => []]],
         tags: ['Competencies'],
         parameters: [
-            new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))
+            new OA\Parameter(name: 'competency', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))
         ],
         responses: [
             new OA\Response(response: 204, description: 'Uspešno obrisano'),
@@ -136,19 +136,19 @@ class CompetencyController extends Controller
 
 
     // Prikaz jedne kompetencije
-    #[OA\Get(
-        path: '/api/competencies/{id}',
-        summary: 'Prikaz jedne kompetencije',
-        security: [['bearerAuth' => []]],
-        tags: ['Competencies'],
-        parameters: [
-            new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))
-        ],
-        responses: [
-            new OA\Response(response: 200, description: 'Detalji kompetencije'),
-            new OA\Response(response: 404, description: 'Nije pronađeno')
-        ]
-    )]
+    // #[OA\Get(
+    //     path: '/api/competencies/{competency}',
+    //     summary: 'Prikaz jedne kompetencije',
+    //     security: [['bearerAuth' => []]],
+    //     tags: ['Competencies'],
+    //     parameters: [
+    //         new OA\Parameter(name: 'competency', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))
+    //     ],
+    //     responses: [
+    //         new OA\Response(response: 200, description: 'Detalji kompetencije'),
+    //         new OA\Response(response: 404, description: 'Nije pronađeno')
+    //     ]
+    // )]
     public function show(Competency $competency)
     {
         $this->authorize('view', $competency); //koristi Laravel Policy da proveri da li trenutni korisnik sme da vidi kompetenicju
@@ -158,12 +158,12 @@ class CompetencyController extends Controller
 
 
     #[OA\Put(
-        path: '/api/competencies/{id}',
+        path: '/api/competencies/{competency}',
         summary: 'Izmena postojeće kompetencije',
         security: [['bearerAuth' => []]],
         tags: ['Competencies'],
         parameters: [
-            new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))
+            new OA\Parameter(name: 'competency', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))
         ],
         requestBody: new OA\RequestBody(
             content: new OA\JsonContent(
@@ -229,14 +229,14 @@ class CompetencyController extends Controller
 
 
     //frontend treba liste institucija, tipova i izvora za dropdown menije
-    #[OA\Get(
-        path: '/api/competencies/options',
-        summary: 'Liste za dropdown (institucije, tipovi, izvori)',
-        tags: ['Competencies'],
-        responses: [
-            new OA\Response(response: 200, description: 'JSON sa nizovima opcija')
-        ]
-    )]
+    // #[OA\Get(
+    //     path: '/api/competencies/options',
+    //     summary: 'Liste za dropdown (institucije, tipovi, izvori)',
+    //     tags: ['Competencies'],
+    //     responses: [
+    //         new OA\Response(response: 200, description: 'JSON sa nizovima opcija')
+    //     ]
+    // )]
     public function getOptions()
     {
         return response()->json([
@@ -248,7 +248,7 @@ class CompetencyController extends Controller
 
     //za sve korisnike vraca komp
     #[OA\Get(
-        path: '/api/admin/all-competencies',
+        path: '/api/all-competencies',
         summary: 'Pregled svih kompetencija u sistemu (Admin)',
         security: [['bearerAuth' => []]],
         tags: ['Admin'],

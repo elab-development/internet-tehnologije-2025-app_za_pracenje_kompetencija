@@ -89,6 +89,7 @@ Route::middleware('auth:sanctum')->group(function () {
         // Admin: open user profile + update user
         Route::get('/users/{id}/profile', [UserController::class, 'adminUserProfile']);
         Route::put('/users/{id}', [UserController::class, 'adminUpdateUser']);
+        Route::get('/verifications-overview', [VerificationController::class, 'systemOverview']);
 
         // Admin: list all users (CLOSED: only admin)
         Route::get('/users', function () {

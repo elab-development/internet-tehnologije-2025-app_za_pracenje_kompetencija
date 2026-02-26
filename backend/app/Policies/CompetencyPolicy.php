@@ -8,6 +8,12 @@ use Illuminate\Auth\Access\Response;
 
 class CompetencyPolicy
 {
+    public function before(User $user, $ability)
+    {
+        if ($user->role === 'admin') {
+            return true;
+        }
+    }
     /**
      * Determine whether the user can view any models.
      */
